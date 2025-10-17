@@ -3,27 +3,22 @@ export const NotFoundPage = () => "<div>No Page</div>"
 /* Sider og View States
 - Hoved Side: Hvor du sender melding
   - Level: Hvilken nivå du er på som Bane, Emne, Hull, Melding eller Bekreftet sendt.
-  - Bane: Hvilken bane som er valgt (enten kan være nummer for ID, eller internt navn for bane)
+  - Bane: Hvilken bane somide: Login eller Registrer bruker
+  - Username: ollihiggin er valgt (enten kan være nummer for ID, eller internt navn for bane)
   - Emne: Hvilket emne som er valgt, kan bare vær navn for emne, eller null for hopp over
   - Hull: Hvilket hull som er valgt, imidletidig er denne satt av bruker, og blir fast når bekrefret, blir sat till null hvis bruker trykker Annet
   - Melding: En string av meldingen som er skrivet
   - Vedlegger: En array av filer som vedlegg
-- Login og Registrerings Side: Login eller Registrer bruker
-  - Username: ollihiggin
+- Login og Registrerings S
   - Email: ole@bribery.no
   - Passord: briberycoknowsbest
 -
-
-Eksempel for Jon
-function renderView() {
-  const app = document.getElementById("app")
-
-  app.innerHTML = `
-    <div class="navbar"></div>
-    <div class="pageContainer">${model.appState.currentPage()}</div>
-    `
-  }
 */
+
+const GENDERS = {
+  MALE: "m",
+  FEMALE: "f"
+}
 
 export const model = {
   appState: {
@@ -32,8 +27,9 @@ export const model = {
   },
 
   viewState: {
+    // # or none
     sendMessage: {
-      level: "lane", // Bane navn // 
+      level: "lane", // Bane navn
       lane: null,
       subject: null,
       hole: null,
@@ -41,25 +37,72 @@ export const model = {
       attachments: []
     },
 
+    // # #login
     login: {
       email: "",
       password: ""
     },
 
+    // # register
     register: {
       username: "",
       email: "",
-      password: ""
+      password: "",
+      gender: "",
+      age: ""
     },
 
+    // lane = null #admin/lanes/messages
+    // lane = (string) && catagory = null #admin/lanes/{lane}/messages
+    // catagory = (string) && message = null #admin/lanes/{lane}/messages/{catagory}
+    // catagory = (string) && message = (object) #admin/lanes/{lane}/messages/{catagory}/{messageid}
+    // catagory = null && message = (object) #admin/lanes/{lane}/messages/{message}
     viewMessages: {
-      lane: null,
-      catagory: null,
-      message: null
+      lane: null, // (string) if no lane, show lane selection screen
+      catagory: null, // (string) else if no catagory, show list of catagories
+      message: null, // (object) else if no message selected, show list of messages in catagory. else show message content
+      writeComment: {
+        setStatus: null,
+        comment: "",
+        attachments: []
+      },
+
+      updateComment: {
+        commentid: null, // null = no comment selected, else index in timeline, -1 = message itself
+        comment: "", // replaced by the selected comment's content
+        attachments: [] // replaced by a cloned array of selected comment's attachments, so that it won't be overwritten when we make changes before submitting.
+      },
+
+      showDeletion: false // (boolean) if true, show confirmation pop up wether admin really wants to delete the selected message. Only admin and bane admin can do this.
+    },
+            // boss man
+            // user = null #admin/users
+            // user = (object) #admin/users/{user}
+    administrateUsers: {
+      search: "", // search by username (without @) or email (with @), result in userSearchResult
+      user: null, // user object if selected, if none show search screen.
+      rating: "", // Input
+
+      confirmAction: null // null if no action, object of type (remove lane role, demote/promote lane role, ban/unban user, set rating) and any data to specify which Lane etc.
+    },
+              // Baneansvarligs gjengen
+              // lane = null #admin/lanes
+              // lane = (string) #admin/lanes/{lane}
+    administrateLanes: {
+      lane: null, // if no lane, show lane selction screen else show Lane Admin and Baneansvarlig
+      search: "", // same as administrateUsers.search, search for user to add to Lane. But filter Admin (if setting Baneansvarlig, demotion) or Baneansvarlig (if setting Admin, promotion)
+      addType: null, // "admin" if user pressed Set Admin, "ansvarlig" if user pressed Add Baneansvarlig. if null, show normal screen, else show the search screen.
+      confirmAction: null // null if no action, object of type (unset/set admin, remove/add baneansvarlig) and any data to specify user id etc
     },
 
+            // Dugnads gjengen
+    /*administrateUserGroups: {
+      
+    }*/
 
   },
+
+  userSearchResult: [],
 
   /* Powers
   0 - Bruker
@@ -81,7 +124,11 @@ export const model = {
       rating: 0,
       email: "ole@bribery.no",
       password: "ᒣ⍑ᒷ ▭ ᑑ⚍╎ᔮ·ǀ· ▭ ᕊ??ᒍ∴リ ▭ ⎓ᒍ̇/▭ ⋮⚍ᒲi!ϟNorges Prisen ▭ ᒍ⍊ᒷ∷ ▭ ᒣ⍑ᒷ ▭ |:ᖋ∩॥ ▭ ∷ᒷ↸ ▭ ↸ᒍ┤ ",
-      picture: null
+      picture: null,
+      priority: false,
+      dob: "01/01/1800",
+      gender: GENDERS.MALE,
+      age: "29"
     },
     {
       id: 1,
@@ -96,7 +143,10 @@ export const model = {
       rating: 0,
       email: "geir@geir.geir",
       password: "geir",
-      picture: null
+      picture: null,
+      priority: true,
+      dob: "01/01/1800",
+      gender: GENDERS.MALE,
     },
     {
       id: 2,
@@ -111,7 +161,10 @@ export const model = {
       rating: 10,
       email: "allYourBases.AreBelongToUs@minecarft.kp", // + 10000 social credits
       password: "1337",
-      picture: "diskpic.jpg"
+      picture: "diskpic.jpg",
+      priority: true,
+      dob: "01/01/1800",
+      gender: GENDERS.MALE
     },
     {
       id: 3,
@@ -126,7 +179,10 @@ export const model = {
       rating: 200,
       email: "KasterLangt@sol.no", 
       password: "wtfscrub",
-      picture: ""
+      picture: "",
+      priority: false,
+      dob: "01/01/1800",
+      gender: GENDERS.MALE
     }
   ],
 
@@ -135,19 +191,20 @@ export const model = {
     "Feilmelding"
   ],
 
-  /* eksempel for Jon
-  function renderCatagories() {
-    const catagories = ['Alle Meldinger', ...model.catagories, 'Andre Meldinger']
-    [
-      "Alle Meldinger",
-      "Ris & Ros",
-      "Feilmelding",
-      "Andre Meldinger"
-    ]
-  }
-  */
 
   lanes: {
+    general: {
+      name: "???",     // NATO secret
+      desc: "??!????", // NATO secret
+      image: "./assets/anonymous.jpg",
+      hull: NaN,       // Not a Number
+      admin: "redacted",
+      ansvarlig: [
+        "redacted", // NATO secret
+        "redacted", // NATO secret
+        "redacted"  // NATO secret
+      ]
+    },
     kodal_short: {
       name: "Kodal Short",
       desc: "En korthullsbane i Kodal, rett ved hovedbanen.",
@@ -199,7 +256,7 @@ export const model = {
         "søppel.jpg" // på ekte hadde dette vært en File object returnert av <input type="file">
       ],
 
-      status: "Banned!",        // Melding status profanity
+      status: "Banned!",        // Melding status: profanity
       ansvarlig: null,
       date: 1760606164285, // Date.now()
 
@@ -229,10 +286,9 @@ export const model = {
       lane: "kodal",
       subject: null,
       hull: null,
-      message: "Very bad discord golf, i no like it. You dare tell us to play this?",
+      message: "I love this place so much",    
       attachments: [
-        "discord.jpg",
-        "diskpic.jpg"  // *wink wink
+        "smileyface.jpg"      
       ],
       
       status: "Sammenslått",
