@@ -198,7 +198,7 @@ export const model = {
       desc: "??!????", // NATO secret
       image: "./assets/anonymous.jpg",
       hull: NaN,       // Not a Number
-      admin: "redacted",
+      admin: "redacted", // NATO secret (Jens Stoltenberg)
       ansvarlig: [
         "redacted", // NATO secret
         "redacted", // NATO secret
