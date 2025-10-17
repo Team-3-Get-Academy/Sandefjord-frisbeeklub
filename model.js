@@ -1,5 +1,3 @@
-export const NotFoundPage = () => "<div>No Page</div>"
-
 /* Sider og View States
 - Hoved Side: Hvor du sender melding
   - Level: Hvilken nivå du er på som Bane, Emne, Hull, Melding eller Bekreftet sendt.
@@ -15,12 +13,12 @@ export const NotFoundPage = () => "<div>No Page</div>"
 -
 */
 
-const GENDERS = {
+const GENDERS = {  
   MALE: "m",
   FEMALE: "f"
 }
 
-export const model = {
+const model = {
   appState: {
     currentPage: NotFoundPage, // funksjon som retunere HTML string til render, default er en Not Found Page.
     auth: null // hvis logget inn, bruker eller null hvis logget ut
@@ -128,7 +126,6 @@ export const model = {
       priority: false,
       dob: "01/01/1800",
       gender: GENDERS.MALE,
-      age: "29"
     },
     {
       id: 1,

@@ -1,5 +1,3 @@
-import { model } from './model.js'
-
 function renderView() {
   const app = document.getElementById("app")
 
