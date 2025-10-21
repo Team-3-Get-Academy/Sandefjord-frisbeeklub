@@ -4,6 +4,11 @@ const routes = [
     view: HomePage
   },
   {
+    path: /^login$/,
+    view: LoginPage,
+    setup: setupUser
+  },
+  {
     path: /^test\/static$/,
     view: StaticTestPage
   },
@@ -78,8 +83,16 @@ function refreshHash() {
   model.appState.routeParams = params;
 
   if (shouldRefreshView(isNewRoute, oldParams)) {
+    if (route.setup) {
+      route.setup()
+    }
+
     renderView()
   }
 }
 
 refreshHash()
+
+function navigate(path) {
+  window.location.hash = "#" + path
+}

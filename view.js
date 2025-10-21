@@ -12,6 +12,16 @@ function StaticTestPage() {
   return "Static Test Page"
 }
 
+function LoginPage() {
+  return /*HTML*/`
+  <label for="email">E-postadresse</label>
+  <input oninput="updateLoginEmail()" id="email" value=${JSON.stringify(model.viewState.login.email)} name="email" required>
+  <label for="password">Passord</label>
+  <input oninput="updateLoginPassword()" id="password" value=${JSON.stringify(model.viewState.login.password)} name="password" type="password" required>
+  <button onclick="loginButton()">Log inn</button>
+  `
+}
+
 function navbar() {
   return /*HTML*/`<div class="navbar">
     <img src="./assets/logo.png">
