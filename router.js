@@ -59,7 +59,7 @@ function shouldRefreshView(isNewRoute, oldParams) {
 }
 
 function refreshHash() {
-  const path = window.location.hash.slice(1);
+  const path = window.location.hash.substring(1);
   const route = resolveRoute(path);
   const params = {};
 
@@ -84,7 +84,7 @@ function refreshHash() {
 
   if (shouldRefreshView(isNewRoute, oldParams)) {
     if (route.setup) {
-      route.setup()
+      route.setup(params)
     }
 
     renderView()
