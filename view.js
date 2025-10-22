@@ -46,7 +46,7 @@ function LoginPage() {
 
 function navigationBar() {
   return /*HTML*/`<div class="navbar">
-    <img src="./assets/logo.png" class="imgBtn" onclick="navigate('')">
+    <img draggable="false" src="./assets/logo.png" class="imgBtn" onclick="navigate('')">
     <h1>Sandefjord Frisbeeklub</h1>
     <button class="hamburger" style="margin-left: auto;" onclick="openNavigation()">
       <span></span>
