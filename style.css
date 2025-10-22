@@ -34,6 +34,14 @@ button {
   transform: scale(0.9);
 }
 
+.modalBackground {
+  position: absolute;
+  z-index: 5000;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(44, 44, 44, 0.5);
+}
+
 /* Navigation Bar */
 
 .navbar {
@@ -73,6 +81,55 @@ button {
   height: 2px;
   width: 100%;
   background-color: rgb(255, 255, 255);
+}
+
+/* Navigation Menu */
+.navmenu {
+  height: 100%;
+  width: 300px;
+  background: rgb(255, 255, 255);
+  margin-left: auto;
+  box-shadow: -5px 0px 10px rgba(44, 44, 44, 0.5);
+}
+
+.navmenu > .info {
+  background: rgb(13, 120, 243);
+  width: 100%;
+  height: 60px;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+}
+
+.navlinks > button {
+  border: none;
+  width: 100%;
+  height: 40px;
+  background: none;
+  color: rgb(42, 135, 241);
+  padding: 0 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
+.navlinks > button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.navlinks > button:active {
+  background-color: rgba(32, 32, 32, 0.4);
+}
+
+@media (max-width: 600px) {
+  .navmenu {
+    width: 100%;
+  }
 }
 
 /* Page - General */

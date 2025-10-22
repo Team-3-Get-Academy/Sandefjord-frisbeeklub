@@ -22,7 +22,8 @@ const model = {
   appState: {
     currentPage: null, // funksjon som retunere HTML string til render, default er en Not Found Page.
     routeParams: {},
-    auth: null // hvis logget inn, bruker eller null hvis logget ut
+    auth: null, // hvis logget inn, bruker eller null hvis logget ut
+    navOpen: false
   },
 
   viewState: {
