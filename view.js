@@ -37,8 +37,13 @@ function LoginPage() {
 
 function navbar() {
   return /*HTML*/`<div class="navbar">
-    <img src="./assets/logo.png">
+    <img src="./assets/logo.png" class="imgBtn" onclick="navigate('')">
     <h1>Sandefjord Frisbeeklub</h1>
+    <button class="hamburger" style="margin-left: auto;">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>`
 }
 
