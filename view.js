@@ -46,7 +46,9 @@ function LoginPage() {
 
 function navigationBar() {
   return /*HTML*/`<div class="navbar">
-    <img draggable="false" src="./assets/logo.png" class="imgBtn" onclick="navigate('')">
+    <a href="#" src="./assets/logo.png" class="imgBtn">
+      <img src="./assets/logo.png" style="pointer-events: none; vertical-align: bottom;"></a>
+    </a>
     <h1>Sandefjord Frisbeeklub</h1>
     <button class="hamburger" style="margin-left: auto;" onclick="openNavigation()">
       <span></span>
@@ -68,14 +70,14 @@ function navigationMenu() {
         </button>
       </div>
       <div class="navlinks">
-        <button onclick="navigateMenu('login')">Logg inn</button>
-        <button>Registrer</button>
-        <button>
+        <a href="#login" onclick="closeNavigation()">Logg inn</a>
+        <a>Registrer</a>
+        <a>
           <span class="material-symbols-outlined">
             admin_panel_settings
           </span>
           Admin Panel
-        </button>
+        </a>
       </div>
     </div>
   </div>`

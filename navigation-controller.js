@@ -9,8 +9,3 @@ function closeNavigation(e, self) {
   model.appState.navOpen = false
   renderView()
 }
-
-function navigateMenu(path) {
-  closeNavigation()
-  navigate(path)
-}
