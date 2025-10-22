@@ -20,18 +20,27 @@ function toAttribute(val) {
 
 function LoginPage() {
   return /*HTML*/`
-  <label for="email">E-postadresse</label>
-  <input oninput="updateLoginEmail()" id="email" value=${toAttribute(model.viewState.login.email)} name="email" required>
-  <label for="password">Passord</label>
-  <input
-    oninput="updateLoginPassword()"
-    id="password"
-    value=${toAttribute(model.viewState.login.password)}
-    name="password"
-    type="password"
-    required
-  >
-  <button onclick="loginButton()">Log inn</button>
+  <form onsubmit="loginSubmit(event)">
+    <label for="email">E-postadresse</label>
+    <input
+      oninput="updateLoginEmail()"
+      id="email"
+      value=${toAttribute(model.viewState.login.email)}
+      name="email"
+      type="email"
+      required
+    >
+    <label for="password">Passord</label>
+    <input
+      oninput="updateLoginPassword()"
+      id="password"
+      value=${toAttribute(model.viewState.login.password)}
+      name="password"
+      type="password"
+      required
+    >
+    <button>Log inn</button>
+  </form>
   `
 }
 

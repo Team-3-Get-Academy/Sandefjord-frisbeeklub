@@ -10,7 +10,9 @@ function updateLoginPassword() {
   model.viewState.login.password = input.value;
 }
 
-function loginButton() {
+function loginSubmit(e) {
+  e.preventDefault()
+
   const email = model.viewState.login.email;
   const password = model.viewState.login.password;
 
