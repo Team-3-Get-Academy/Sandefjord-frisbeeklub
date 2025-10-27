@@ -47,6 +47,18 @@ function updateMessage() {
   model.viewState.sendMessage.message = input.value;
 }
 
+function selectMessageAttachments() {
+  const input = document.createElement("input")
+  input.type = "file"
+  input.multiple = true
+  
+  input.addEventListener("change", () => {
+    console.log(input.files)
+  })
+
+  input.click()
+}
+
 function sendMessage() {
   model.viewState.sendMessage.level = "sent";
 

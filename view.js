@@ -31,7 +31,7 @@ const messageFormLevels = {
         <button onclick="setLevel('hole')">Gå tilbake</button>
         <h3>Skriv Melding</h3>
         <textarea oninput="updateMessage()" id="message">${htmlEscape(model.viewState.sendMessage.message)}</textarea>
-        <input type="file" multiple id="attachment" />
+        <button onclick="selectMessageAttachments()">Legg til vedlegg</button>
         <button onclick="sendMessage()">Send Melding</button>
       </div>`,
   sent: () => /*HTML*/`<p>Meldingen har blitt sendt.</p><button onclick="setupHome(); renderView()">OK</button>`
