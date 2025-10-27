@@ -1,7 +1,8 @@
 const routes = [
   {
     path: /^$/, // empty
-    view: HomePage
+    view: HomePage,
+    setup: setupHome
   },
   {
     path: /^login$/,

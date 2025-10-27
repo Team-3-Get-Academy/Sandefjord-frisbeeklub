@@ -1,7 +1,49 @@
 const NotFoundPage = () => "<div>Page not Found</div>"
 
+/* copied from Stack Overflow */
+function htmlEscape(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+const messageFormLevels = {
+  lane: () => /*HTML*/`<div class="messageFormContainer">
+        <h3>Velg Bane for Melding</h3>
+        ${Object.entries(model.lanes).map(([id, lane]) => `<button onclick="selectMessageFormLane('${id}')">${lane.name}</button>`).join("")}
+      </div>`,
+  topic: () => /*HTML*/`<div class="messageFormContainer">
+        <button onclick="setLevel('lane')">Gå tilbake</button>
+        <h3>Velg Emne for Melding</h3>
+        ${[...model.catagories, 'other'].map(c => `<button onclick="selectMessageFormTopic('${c}')">${c === 'other' ? 'Annet' : c}</button>`).join("")}
+        <button onclick="selectMessageFormTopic(null)">Hopp over</button>
+      </div>`,
+  hole: () => /*HTML*/`<div class="messageFormContainer">
+        <button onclick="setLevel('topic')">Gå tilbake</button>
+        <h3>Velg Hull for Melding</h3>
+        ${Array.from({length: model.viewState.sendMessage.lane.hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
+        <button onclick="selectMessageFormHoleOther()">Annet</button><button onclick="confirmMessageFormHole()">Bekreft</button>
+      </div>`,
+  message: () => /*HTML*/`<div class="messageFormContainer">
+        <button onclick="setLevel('hole')">Gå tilbake</button>
+        <h3>Skriv Melding</h3>
+        <textarea oninput="updateMessage()" id="message">${htmlEscape(model.viewState.sendMessage.message)}</textarea>
+        <input type="file" multiple id="attachment" />
+        <button onclick="sendMessage()">Send Melding</button>
+      </div>`,
+  sent: () => /*HTML*/`<p>Meldingen har blitt sendt.</p><button onclick="setupHome(); renderView()">OK</button>`
+}
+
 function HomePage() {
-  return /*HTML*/`Velkommen til Sandefjord Frisbeeklub`
+  return /*HTML*/`
+    <div class="homepageContainer">
+      ${model.viewState.sendMessage.level !== 'sent' ? '<h2 style="text-align: center">Send Melding til Sandefjord Frisbeeklub</h2>' : ''}
+      ${messageFormLevels[model.viewState.sendMessage.level]?.() || ""}
+    </div>
+  `
 }
 
 function TestPage(params) {
@@ -73,9 +115,7 @@ function navigationMenu() {
         <a href="#login" onclick="closeNavigation()">Logg inn</a>
         <a>Registrer</a>
         <a>
-          <span class="material-symbols-outlined">
-            admin_panel_settings
-          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M680-280q25 0 42.5-17.5T740-340q0-25-17.5-42.5T680-400q-25 0-42.5 17.5T620-340q0 25 17.5 42.5T680-280Zm0 120q31 0 57-14.5t42-38.5q-22-13-47-20t-52-7q-27 0-52 7t-47 20q16 24 42 38.5t57 14.5ZM480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v227q-19-8-39-14.5t-41-9.5v-147l-240-90-240 90v188q0 47 12.5 94t35 89.5Q310-290 342-254t71 60q11 32 29 61t41 52q-1 0-1.5.5t-1.5.5Zm200 0q-83 0-141.5-58.5T480-280q0-83 58.5-141.5T680-480q83 0 141.5 58.5T880-280q0 83-58.5 141.5T680-80ZM480-494Z"/></svg>
           Admin Panel
         </a>
       </div>
