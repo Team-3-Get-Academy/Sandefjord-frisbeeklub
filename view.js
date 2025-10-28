@@ -24,13 +24,14 @@ const messageFormLevels = {
   hole: () => /*HTML*/`<div class="messageFormContainer">
         <button onclick="setLevel('topic')">Gå tilbake</button>
         <h3>Velg Hull for Melding</h3>
-        ${Array.from({length: model.viewState.sendMessage.lane.hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
+        ${Array.from({length: model.lanes[model.viewState.sendMessage.lane].hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
         <button onclick="selectMessageFormHoleOther()">Annet</button><button onclick="confirmMessageFormHole()">Bekreft</button>
       </div>`,
   message: () => /*HTML*/`<div class="messageFormContainer">
         <button onclick="setLevel('hole')">Gå tilbake</button>
         <h3>Skriv Melding</h3>
         <textarea oninput="updateMessage()" id="message">${htmlEscape(model.viewState.sendMessage.message)}</textarea>
+        ${model.viewState.sendMessage.attachments.map((file, i) => `<button onclick="removeMessageAttachment(${i})">Slett ${file.name}</button>`).join("")}
         <button onclick="selectMessageAttachments()">Legg til vedlegg</button>
         <button onclick="sendMessage()">Send Melding</button>
       </div>`,
