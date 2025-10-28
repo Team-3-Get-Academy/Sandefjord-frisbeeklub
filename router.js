@@ -10,8 +10,20 @@ const routes = [
     setup: setupUser
   },
   {
-    path: /^adminPanel$/,
-    view: adminPanel,
+    path: /^admin$/,
+    view: adminPanel
+  },
+  {
+    path: /^adminMessage$/,
+    view: admMsg
+  },
+  {
+    path: /^adminLanes$/,
+    view: admLanes
+  },
+  {
+    path: /^adminUsers$/,
+    view: admUsers
   },
   {
     path: /^test\/static$/,
