@@ -1,7 +1,7 @@
 function selectMessageFormLane(lane) {
   if (!model.lanes[lane]) return alert("Internal Error: Lane not found.")
 
-  model.viewState.sendMessage.lane = model.lanes[lane];
+  model.viewState.sendMessage.lane = lane;
   model.viewState.sendMessage.level = "topic";
 
   renderView()
@@ -53,13 +53,41 @@ function selectMessageAttachments() {
   input.multiple = true
   
   input.addEventListener("change", () => {
-    console.log(input.files)
+    for (const file of input.files) {
+      model.viewState.sendMessage.attachments.push(file)
+    }
+
+    renderView()
   })
 
   input.click()
 }
 
+function removeMessageAttachment(index) {
+  model.viewState.sendMessage.attachments.splice(index, 1)
+
+  renderView()
+}
+
 function sendMessage() {
+  const msgId = ++model.appState.messageCounter;
+  const msg = {
+    userid: model.appState.auth ? model.appState.auth.id : null,
+    messageid: msgId,
+    lane: model.viewState.sendMessage.lane,
+    subject: model.viewState.sendMessage.subject,
+    hole: model.viewState.sendMessage.hole,
+    message: model.viewState.sendMessage.message,
+    attachments: model.viewState.sendMessage.attachments,
+    status: "Ikke Tildelt",
+    ansvarlig: null,
+    date: Date.now(),
+    references: [],
+    timeline: []
+  }
+
+  model.messages.push(msg)
+
   model.viewState.sendMessage.level = "sent";
 
   renderView();

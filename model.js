@@ -23,7 +23,8 @@ const model = {
     currentPage: null, // funksjon som retunere HTML string til render, default er en Not Found Page.
     routeParams: {},
     auth: null, // hvis logget inn, bruker eller null hvis logget ut
-    navOpen: false
+    navOpen: false,
+    messageCounter: 2 // used to track latest message id, increment to get new
   },
 
   viewState: {
@@ -249,7 +250,7 @@ const model = {
       messageid: 1,
       lane: "kodal",
       subject: "Ris & Ros",
-      hull: null,
+      hole: null,
       message: "Verste discgolf jeg har vært med på! Legg det ned med en eneste gang!",
       attachments: [
         "søppel.jpg" // på ekte hadde dette vært en File object returnert av <input type="file">
@@ -284,7 +285,7 @@ const model = {
       messageid: 2,
       lane: "kodal",
       subject: null,
-      hull: null,
+      hole: null,
       message: "I love this place so much",    
       attachments: [
         "smileyface.jpg"      
