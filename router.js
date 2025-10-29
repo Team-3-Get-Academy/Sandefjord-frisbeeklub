@@ -22,6 +22,13 @@ const routes = [
     view: admLanes
   },
   {
+    path: /^admin\/lanes\/([^\/]+)\/messages$/,
+    view: (params) => `Messages for ${params.lane}`,
+    paramKeys: [
+      "lane"
+    ]
+  },
+  {
     path: /^admin\/users$/,
     view: admUsers
   },

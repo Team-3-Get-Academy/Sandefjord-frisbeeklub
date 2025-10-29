@@ -170,3 +170,43 @@ button {
   text-align: center;
   margin: 0;
 }
+
+.messageFormContainer.message {
+  display: flex;
+  flex-direction: column;
+}
+
+textarea#message {
+  resize: none;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.laneOption {
+  display: block;
+  width: 100%;
+  padding: 50px;
+  margin: 16px 0;
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.laneOption > h3 {
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.laneOption > p {
+  font-size: 20px;
+}
+
+.laneOption > h3, .laneOption > p {
+  margin: 0;
+  color: white;
+}

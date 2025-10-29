@@ -27,8 +27,8 @@ const messageFormLevels = {
         ${Array.from({length: model.lanes[model.viewState.sendMessage.lane].hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
         <button onclick="selectMessageFormHoleOther()">Annet</button><button onclick="confirmMessageFormHole()">Bekreft</button>
       </div>`,
-  message: () => /*HTML*/`<div class="messageFormContainer">
-        <button onclick="setLevel('hole')">Gå tilbake</button>
+  message: () => /*HTML*/`<div class="messageFormContainer message">
+        <button onclick="setLevel('hole')" style="align-self: start">Gå tilbake</button>
         <h3>Skriv Melding</h3>
         <textarea oninput="updateMessage()" id="message">${htmlEscape(model.viewState.sendMessage.message)}</textarea>
         ${model.viewState.sendMessage.attachments.map((file, i) => `<button onclick="removeMessageAttachment(${i})">Slett ${file.name}</button>`).join("")}
@@ -100,7 +100,14 @@ function adminPanel(){
 
 function admMsg(){
   return /*HTML*/ `
-  <h2>ADMIN1</h2>
+    <h2 style="text-align: center;">Meldinger</h2>
+    <h3 style="text-align: center;">Velg Bane</h3>
+    ${Object.entries(model.lanes).map(([id, lane]) =>
+      /*HTML*/`<a class="laneOption" href="#admin/lanes/${id}/messages" style="background-image: url(${lane.image})">
+      <h3>${htmlEscape(lane.name)}</h3>
+      <p>${htmlEscape(lane.desc)}</p>
+    </a>`
+  ).join("")}
   `
 }
 
