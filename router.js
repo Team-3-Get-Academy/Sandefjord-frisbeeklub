@@ -23,9 +23,17 @@ const routes = [
   },
   {
     path: /^admin\/lanes\/([^\/]+)\/messages$/,
-    view: (params) => `Messages for ${params.lane}`,
+    view: adminMessagesCatagories,
     paramKeys: [
       "lane"
+    ]
+  },
+  {
+    path: /^admin\/lanes\/([^\/]+)\/messages\/([^\/]+)$/,
+    view: adminMessages,
+    paramKeys: [
+      "lane",
+      "topic"
     ]
   },
   {
@@ -93,7 +101,7 @@ function refreshHash() {
     if (paramValues && paramValues.length === (route.paramKeys.length + 1)) {
       for (var i = 0; i < route.paramKeys.length; i++) {
         if (!paramValues[i + 1]) continue;
-        params[route.paramKeys[i]] = paramValues[i + 1]
+        params[route.paramKeys[i]] = decodeURIComponent(paramValues[i + 1])
       }
     } else {
       console.warn("Route Params failed to parse")

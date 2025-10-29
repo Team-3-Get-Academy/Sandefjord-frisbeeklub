@@ -103,11 +103,75 @@ function admMsg(){
     <h2 style="text-align: center;">Meldinger</h2>
     <h3 style="text-align: center;">Velg Bane</h3>
     ${Object.entries(model.lanes).map(([id, lane]) =>
-      /*HTML*/`<a class="laneOption" href="#admin/lanes/${id}/messages" style="background-image: url(${lane.image})">
+      /*HTML*/`<a class="laneOption" href="#admin/lanes/${encodeURIComponent(id)}/messages" style="background-image: url(${lane.image})">
       <h3>${htmlEscape(lane.name)}</h3>
       <p>${htmlEscape(lane.desc)}</p>
     </a>`
   ).join("")}
+  `
+}
+
+function forumButton(text, href) {
+  return /*HTML*/`<a class="forumButton" href="${href}">${htmlEscape(text)}</a>`
+}
+
+function adminMessagesCatagories(params) {
+  const lane = model.lanes[params.lane] || { name: "Ukjent Bane" }
+
+  return /*HTML*/`
+  <h2 style="text-align: center">Meldinger fra ${lane.name}</h2>
+  ${forumButton('Alle Meldinger', `#admin/lanes/${encodeURIComponent(params.lane)}/messages/all`)}
+  ${model.catagories.map(c => forumButton(c, `#admin/lanes/${encodeURIComponent(params.lane)}/messages/${encodeURIComponent(c)}`)).join("")}
+  ${forumButton('Andre Meldinger', `#admin/lanes/${encodeURIComponent(params.lane)}/messages/other`)}
+  `
+}
+
+function filterMessagesByTopic(lane, topic) {
+  const messages = model.messages.filter(m => m.lane === lane);
+
+  if (topic === 'all') return messages
+  if (topic === 'other') return messages.filter(m => !model.catagories.includes(m.subject))
+  
+  return messages.filter(m => m.subject === topic)
+}
+
+const topicNames = {
+  all: "Alle Meldinger",
+  other: "Andre Meldinger"
+}
+
+function partitionMessages(messages) {
+  let catagories = []
+  
+  for (const message of messages) {
+    if (catagories.includes(message.subject)) continue;
+    catagories.push(message.subject)
+  }
+
+  return catagories.map((topic) => {
+    let topicName = topic;
+
+    if (typeof topicName !== 'string') topicName = 'Uspesifisert'
+    if (topicName === 'other') topicName = topicNames.other
+
+    return {
+      title: topicName,
+      messages: messages.filter(m => m.subject === topic)
+    }
+  })
+}
+
+function adminMessages(params) {
+  const lane = model.lanes[params.lane] || { name: "Ukjent Bane" }
+
+  let topics = partitionMessages(filterMessagesByTopic(params.lane, params.topic));
+
+  return /*HTML*/`
+  <h2 style="text-align: center">Meldinger fra ${lane.name} (${topicNames[params.topic] || params.topic})</h2>
+  ${topics.map((topic) => /*HTML*/`
+    <h3>${htmlEscape(topic.title)}</h3>
+    ${topic.messages.map(m => forumButton(m.message, "")).join("")}
+  `).join("")}
   `
 }
 

@@ -210,3 +210,20 @@ textarea#message {
   margin: 0;
   color: white;
 }
+
+.forumButton {
+  width: 100%;
+  font-size: 20px;
+  padding: 0 16px;
+  height: 50px;
+  text-align: left;
+  background: rgb(223, 223, 223);
+  border: solid 1px rgb(143, 143, 143);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
