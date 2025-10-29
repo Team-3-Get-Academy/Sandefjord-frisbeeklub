@@ -14,15 +14,15 @@ const routes = [
     view: adminPanel
   },
   {
-    path: /^adminMessage$/,
+    path: /^admin\/messages$/,
     view: admMsg
   },
   {
-    path: /^adminLanes$/,
+    path: /^admin\/lanes$/,
     view: admLanes
   },
   {
-    path: /^adminUsers$/,
+    path: /^admin\/users$/,
     view: admUsers
   },
   {

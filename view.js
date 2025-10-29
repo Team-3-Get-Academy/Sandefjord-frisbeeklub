@@ -89,9 +89,9 @@ function LoginPage() {
 function adminPanel(){
     return /*HTML*/ `<h2 style="text-align: center">Admin Panel</h2>
     <div class="navlinks">
-      <a href="#adminMessage">Se Meldinger</a>
-      <a href="#adminLanes">Administrer Baner</a>
-      <a href="#adminUsers">Administrer Brukere</a>
+      <a href="#admin/messages">Se Meldinger</a>
+      <a href="#admin/lanes">Administrer Baner</a>
+      <a href="#admin/users">Administrer Brukere</a>
     </div>
     `
 
