@@ -39,7 +39,7 @@ function loadModel() {
   model.messages = json.messages;
 
   model.appState.messageCounter = json.messageCounter
-  model.appState.auth = model.users[json.auth]
+  model.appState.auth = model.users.find(u => u.id == json.auth)
 }
 
 const model = {
@@ -48,7 +48,7 @@ const model = {
     routeParams: {},
     auth: null, // hvis logget inn, bruker eller null hvis logget ut
     navOpen: false,
-    messageCounter: 3 // used to track latest message id, increment to get new
+    messageCounter: 4 // used to track latest message id, increment to get new
   },
 
   viewState: {
@@ -341,7 +341,7 @@ const model = {
     },
     {
       userid: 2, // Gjest
-      messageid: 2,
+      messageid: 3,
       lane: "kodal_short",
       subject: null,
       hole: null,
@@ -358,7 +358,7 @@ const model = {
     },
     {
       userid: 3, // Gjest
-      messageid: 2,
+      messageid: 4,
       lane: "kodal_short",
       subject: null,
       hole: null,

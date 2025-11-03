@@ -118,8 +118,25 @@ function LoginPage() {
   `
 }
 
+function adminBreacrumbs(breadcrumbs) {
+  return /*HTML*/`<div class="breadcrumbs">
+    ${breadcrumbs.map((b, i) => {
+      if (i === breadcrumbs.length - 1) {
+        return `<span>${htmlEscape(b.text)}</span>`
+      } else {
+        return `<a href="#${breadcrumbs.slice(0, i+1).map(b=>b.href).join("/")}">${b.text}</a>`
+      }
+    }).join(`<span class="seperator">/</span>`)}
+  </div>`
+}
+
 function adminPanel(){
-    return /*HTML*/ `<h2 style="text-align: center">Admin Panel</h2>
+    return /*HTML*/ `
+    ${adminBreacrumbs([{
+      text: "Admin Panel",
+      href: "admin"
+    }])}
+    <h2 style="text-align: center">Admin Panel</h2>
     <div class="navlinks">
       <a href="#admin/messages">Se Meldinger</a>
       <a href="#admin/lanes">Administrer Baner</a>
@@ -129,10 +146,10 @@ function adminPanel(){
 
 }
 
-function forumButton(msg, href) {
-  const user = msg.userid !== null ? model.users[msg.userid] : null;
+function forumButton(msg) {
+  const user = msg.userid !== null ? model.users.find(u => u.id == msg.userid) : null;
 
-  return /*HTML*/`<a class="forumButton" href="${href}">
+  return /*HTML*/`<a class="forumButton" href="#admin/messages/${msg.messageid}">
   <div>
     <div>${htmlEscape(msg.message)}</div>
   </div>
@@ -142,7 +159,7 @@ function forumButton(msg, href) {
   })}
   <span>${user ? user.username : 'Gjest'}</span>
   </div>
-  </a>${msg.attachments.map(x=>`<img src=${JSON.stringify(x.data)}><p>${htmlEscape(x.name)}</p>`).join("")}`
+  </a>`//${msg.attachments.map(x=>`<img src=${JSON.stringify(x.data)}><p>${htmlEscape(x.name)}</p>`).join("")}
 }
 
 function filterMessagesByTopic(lane, topic) {
@@ -197,6 +214,16 @@ function adminMessages(params) {
   let lanes = partitionByLane(filterMessagesByTopic(params.lane, params.topic));
 
   return /*HTML*/`
+  ${adminBreacrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Meldinger",
+      href: "messages"
+    }
+  ])}
   <h2 style="text-align: center">Meldinger</h2>
   ${lanes.map((lane) => /*HTML*/`
     <h2 style="font-weight: 600">${htmlEscape(lane.title)}</h2>
@@ -206,6 +233,28 @@ function adminMessages(params) {
     `).join("")}
   `).join("")}
   `
+}
+
+function adminMessage(params) {
+  const breadcrumbs = adminBreacrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Meldinger",
+      href: "messages"
+    },
+    {
+      text: `Melding ${params.message}`,
+      href: encodeURIComponent(params.message)
+    }
+  ])
+
+  const message = model.messages.find(m => m.messageid == params.message);
+  if (!message) return breadcrumbs + "<div>Ukjent Melding</div>";
+
+  return breadcrumbs + JSON.stringify(message)
 }
 
 function admLanes(){
