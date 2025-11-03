@@ -18,6 +18,30 @@ const GENDERS = {
   FEMALE: "f"
 }
 
+function saveModel() {
+  const json = {
+    users: model.users,
+    messages: model.messages,
+    messageCounter: model.appState.messageCounter,
+    auth: model.appState.auth ? model.appState.auth.id : null
+  }
+
+  localStorage.setItem("data", JSON.stringify(json))
+}
+
+function loadModel() {
+  const saveData = localStorage.getItem("data")
+  if (!saveData) return;
+
+  const json = JSON.parse(saveData)
+
+  model.users = json.users;
+  model.messages = json.messages;
+
+  model.appState.messageCounter = json.messageCounter
+  model.appState.auth = model.users[json.auth]
+}
+
 const model = {
   appState: {
     currentPage: null, // funksjon som retunere HTML string til render, default er en Not Found Page.
@@ -312,3 +336,5 @@ const model = {
     }
   ]
 }
+
+loadModel()

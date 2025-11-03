@@ -90,6 +90,7 @@ function sendMessage() {
 
   model.viewState.sendMessage.level = "sent";
 
+  saveModel();
   renderView();
 }
 

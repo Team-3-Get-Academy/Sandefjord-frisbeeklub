@@ -22,6 +22,8 @@ function loginSubmit(e) {
   if (user.password !== password) return alert("Feil passord.")
 
   model.appState.auth = user
+
+  saveModel();
   navigate("")
 }
 
