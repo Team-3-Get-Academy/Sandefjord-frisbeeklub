@@ -69,7 +69,13 @@ function removeMessageAttachment(index) {
   renderView()
 }
 
-function sendMessage() {
+async function sendMessage() {
+  const attachments = []
+
+  for (const attachment of model.viewState.sendMessage.attachments) {
+    attachments.push({name: attachment.name, data: await getFileDataURL(attachment)})
+  }
+
   const msgId = ++model.appState.messageCounter;
   const msg = {
     userid: model.appState.auth ? model.appState.auth.id : null,
@@ -78,7 +84,7 @@ function sendMessage() {
     subject: model.viewState.sendMessage.subject,
     hole: model.viewState.sendMessage.hole,
     message: model.viewState.sendMessage.message,
-    attachments: model.viewState.sendMessage.attachments,
+    attachments,
     status: "Ikke Tildelt",
     ansvarlig: null,
     date: Date.now(),
