@@ -14,27 +14,10 @@ const routes = [
     view: adminPanel
   },
   {
-    path: /^admin\/messages$/,
-    view: admMsg
-  },
-  {
     path: /^admin\/lanes$/,
     view: admLanes
   },
   {
-    path: /^admin\/lanes\/([^\/]+)\/messages$/,
-    view: adminMessagesCatagories,
-    paramKeys: [
-      "lane"
-    ]
-  },
-  {
-    path: /^admin\/lanes\/([^\/]+)\/messages\/([^\/]+)$/,
-    view: adminMessages,
-    paramKeys: [
-      "lane",
-      "topic"
-    ]
   },
   {
     path: /^admin\/users$/,

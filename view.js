@@ -98,34 +98,9 @@ function adminPanel(){
 
 }
 
-function admMsg(){
-  return /*HTML*/ `
-    <h2 style="text-align: center;">Meldinger</h2>
-    <h3 style="text-align: center;">Velg Bane</h3>
-    ${Object.entries(model.lanes).map(([id, lane]) =>
-      /*HTML*/`<a class="laneOption" href="#admin/lanes/${encodeURIComponent(id)}/messages" style="background-image: url(${lane.image})">
-      <h3>${htmlEscape(lane.name)}</h3>
-      <p>${htmlEscape(lane.desc)}</p>
-    </a>`
-  ).join("")}
-  `
-}
-
 function forumButton(text, href) {
   return /*HTML*/`<a class="forumButton" href="${href}">${htmlEscape(text)}</a>`
 }
-
-function adminMessagesCatagories(params) {
-  const lane = model.lanes[params.lane] || { name: "Ukjent Bane" }
-
-  return /*HTML*/`
-  <h2 style="text-align: center">Meldinger fra ${lane.name}</h2>
-  ${forumButton('Alle Meldinger', `#admin/lanes/${encodeURIComponent(params.lane)}/messages/all`)}
-  ${model.catagories.map(c => forumButton(c, `#admin/lanes/${encodeURIComponent(params.lane)}/messages/${encodeURIComponent(c)}`)).join("")}
-  ${forumButton('Andre Meldinger', `#admin/lanes/${encodeURIComponent(params.lane)}/messages/other`)}
-  `
-}
-
 function filterMessagesByTopic(lane, topic) {
   const messages = model.messages.filter(m => m.lane === lane);
 
