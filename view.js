@@ -98,16 +98,23 @@ function adminPanel(){
 
 }
 
-function forumButton(text, href) {
-  return /*HTML*/`<a class="forumButton" href="${href}">${htmlEscape(text)}</a>`
-}
-function filterMessagesByTopic(lane, topic) {
-  const messages = model.messages.filter(m => m.lane === lane);
+function forumButton(msg, href) {
+  const user = msg.userid !== null ? model.users[msg.userid] : null;
 
-  if (topic === 'all') return messages
-  if (topic === 'other') return messages.filter(m => !model.catagories.includes(m.subject))
+  return /*HTML*/`<a class="forumButton" href="${href}">
+  <div>
+    <div>${htmlEscape(msg.message)}</div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px">
+  <span>${user ? user.username : 'Gjest'}</span>
+  </div>
+  </a>${msg.attachments.map(x=>`<img src=${JSON.stringify(x.data)}><p>${htmlEscape(x.name)}</p>`).join("")}`
+}
+
+function filterMessagesByTopic(lane, topic) {
+  const messages = model.messages.filter(m => userCanAccessLane(model.appState.auth, m.lane));
   
-  return messages.filter(m => m.subject === topic)
+  return messages
 }
 
 const topicNames = {
@@ -115,7 +122,7 @@ const topicNames = {
   other: "Andre Meldinger"
 }
 
-function partitionMessages(messages) {
+function partitionByCatagory(messages) {
   let catagories = []
   
   for (const message of messages) {
@@ -136,16 +143,33 @@ function partitionMessages(messages) {
   })
 }
 
-function adminMessages(params) {
-  const lane = model.lanes[params.lane] || { name: "Ukjent Bane" }
+function partitionByLane(messages) {
+  let lanes = []
+  
+  for (const message of messages) {
+    if (lanes.includes(message.lane)) continue;
+    lanes.push(message.lane)
+  }
 
-  let topics = partitionMessages(filterMessagesByTopic(params.lane, params.topic));
+  return lanes.map((lane) => {
+    return {
+      title: model.lanes[lane].name,
+      messages: messages.filter(m => m.lane === lane)
+    }
+  })
+}
+
+function adminMessages(params) {
+  let lanes = partitionByLane(filterMessagesByTopic(params.lane, params.topic));
 
   return /*HTML*/`
-  <h2 style="text-align: center">Meldinger fra ${lane.name} (${topicNames[params.topic] || params.topic})</h2>
-  ${topics.map((topic) => /*HTML*/`
-    <h3>${htmlEscape(topic.title)}</h3>
-    ${topic.messages.map(m => forumButton(m.message, "")).join("")}
+  <h2 style="text-align: center">Meldinger</h2>
+  ${lanes.map((lane) => /*HTML*/`
+    <h2 style="font-weight: 600">${htmlEscape(lane.title)}</h2>
+    ${partitionByCatagory(lane.messages).map((topic) => /*HTML*/`
+      <h3>${htmlEscape(topic.title)}</h2>
+      ${topic.messages.map(m => forumButton(m)).join("")}
+    `).join("")}
   `).join("")}
   `
 }

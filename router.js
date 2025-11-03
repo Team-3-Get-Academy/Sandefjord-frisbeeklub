@@ -18,6 +18,8 @@ const routes = [
     view: admLanes
   },
   {
+    path: /^admin\/messages$/,
+    view: adminMessages
   },
   {
     path: /^admin\/users$/,

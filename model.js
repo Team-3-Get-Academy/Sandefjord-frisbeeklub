@@ -48,7 +48,7 @@ const model = {
     routeParams: {},
     auth: null, // hvis logget inn, bruker eller null hvis logget ut
     navOpen: false,
-    messageCounter: 2 // used to track latest message id, increment to get new
+    messageCounter: 3 // used to track latest message id, increment to get new
   },
 
   viewState: {
@@ -215,7 +215,6 @@ const model = {
     "Feilmelding"
   ],
 
-
   lanes: {
     general: {
       name: "???",     // NATO secret
@@ -270,7 +269,7 @@ const model = {
 
   messages: [
     {
-      userid: 10,  
+      userid: 1,  
       messageid: 1,
       lane: "kodal",
       subject: "Ris & Ros",
@@ -305,7 +304,7 @@ const model = {
       ]
     },
     {
-      userid: null, // Gjest
+      userid: 0, // Gjest
       messageid: 2,
       lane: "kodal",
       subject: null,
@@ -336,6 +335,40 @@ const model = {
           date: 1760606164285
         }
       ]
+    },
+    {
+      userid: 2, // Gjest
+      messageid: 2,
+      lane: "kodal_short",
+      subject: null,
+      hole: null,
+      message: "test",    
+      attachments: [],
+      
+      status: "Ikke Tildelt",
+      ansvarlig: null,
+      date: 1760606164285,
+      
+      references: [],
+
+      timeline: []
+    },
+    {
+      userid: 3, // Gjest
+      messageid: 2,
+      lane: "kodal_short",
+      subject: null,
+      hole: null,
+      message: "test",    
+      attachments: [],
+      
+      status: "Ikke Tildelt",
+      ansvarlig: null,
+      date: 1760606164285,
+      
+      references: [],
+
+      timeline: []
     }
   ]
 }

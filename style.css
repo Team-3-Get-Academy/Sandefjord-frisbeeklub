@@ -182,45 +182,17 @@ textarea#message {
   flex-grow: 1;
 }
 
-.laneOption {
-  display: block;
-  width: 100%;
-  padding: 50px;
-  margin: 16px 0;
-  height: 250px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-decoration: none;
-}
-
-.laneOption > h3 {
-  font-size: 40px;
-  font-weight: 500;
-}
-
-.laneOption > p {
-  font-size: 20px;
-}
-
-.laneOption > h3, .laneOption > p {
-  margin: 0;
-  color: white;
-}
-
 .forumButton {
   width: 100%;
   font-size: 20px;
   padding: 0 16px;
-  height: 50px;
+  height: 70px;
   text-align: left;
   background: rgb(223, 223, 223);
   border: solid 1px rgb(143, 143, 143);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   text-decoration: none;
   color: black;
   overflow: hidden;
