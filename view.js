@@ -38,6 +38,37 @@ const messageFormLevels = {
   sent: () => /*HTML*/`<p>Meldingen har blitt sendt.</p><button onclick="setupHome(); renderView()">OK</button>`
 }
 
+function getInitals(username) {
+  let parts = username.split(/\s/)
+
+  if (parts.length > 2) {
+    parts = [parts[0], parts[parts.length - 1]]
+  }
+
+  return parts.map(x=>x[0].toUpperCase()).join("")
+}
+
+const avatarColors = ["avatarBlue", "avatarRed", "avatarYellow", "avatarGreen"]
+
+function AvatarComponent(properties) {
+  if (!properties.user) return /*HTML*/`
+  <div class="avatarText${properties.class ? ` ${properties.class}` : ''}">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e8eaed"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+  </div>
+  `
+
+  if (false && properties.user.picture) {
+
+  } else {
+    const avatarColor = avatarColors[properties.user.id % avatarColors.length] 
+    return /*HTML*/`
+    <div class="avatarText ${avatarColor}${properties.class ? ` ${properties.class}` : ''}">
+      ${htmlEscape(getInitals(properties.user.username))}
+    </div>
+    `
+  }
+}
+
 function HomePage() {
   return /*HTML*/`
     <div class="homepageContainer">
@@ -106,6 +137,9 @@ function forumButton(msg, href) {
     <div>${htmlEscape(msg.message)}</div>
   </div>
   <div style="display: flex; align-items: center; gap: 6px">
+  ${AvatarComponent({
+    user
+  })}
   <span>${user ? user.username : 'Gjest'}</span>
   </div>
   </a>${msg.attachments.map(x=>`<img src=${JSON.stringify(x.data)}><p>${htmlEscape(x.name)}</p>`).join("")}`

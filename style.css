@@ -199,3 +199,43 @@ textarea#message {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.forumButton .avatarText {
+  height: 30px;
+  width: 30px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.avatarText {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(75, 75, 75);
+  color: white;
+  font-weight: 500;
+}
+
+.avatarText > * {
+  height: 100%;
+  width: 100%;
+}
+
+.avatarBlue {
+  background-color: rgb(69, 69, 252);
+}
+
+.avatarRed {
+  background-color: rgb(252, 69, 69);
+}
+
+.avatarYellow {
+  background-color: rgb(240, 211, 47);
+  color: black;
+}
+
+.avatarGreen {
+  background-color: rgb(127, 252, 69);
+  color: black;
+}
