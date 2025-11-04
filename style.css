@@ -142,10 +142,6 @@ button {
   overflow: auto;
 }
 
-.selectedBtn {
-  background-color: blue;
-}
-
 /* Page - Home */
 .homepageContainer {
   height: 100%;
@@ -177,6 +173,48 @@ button {
   flex-direction: column;
 }
 
+.holeList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  overflow: auto;
+  margin-top: 12px;
+}
+
+.holeList > button {
+  font-size: 18px;
+  font-weight: 600;
+  background-color: rgb(18, 120, 238);
+  color: white;
+  border: solid 2px rgb(0, 162, 255);
+  border-radius: 10px;
+  height: 50px;
+  width: 50px;
+}
+
+.holeList > button.selectedBtn {
+  background-color: rgb(0, 162, 255);
+}
+
+.buttonList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: auto;
+  margin-top: 12px;
+}
+
+.buttonList > button, .formButton {
+  font-size: 15px;
+  font-weight: 600;
+  background-color: rgb(18, 120, 238);
+  color: white;
+  border: solid 2px rgb(0, 162, 255);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
 textarea#message {
   resize: none;
   width: 100%;
@@ -186,11 +224,12 @@ textarea#message {
 .forumButton {
   width: 100%;
   font-size: 20px;
-  padding: 0 16px;
-  height: 70px;
+  padding: 16px;
   text-align: left;
   background: rgb(223, 223, 223);
-  border: solid 1px rgb(143, 143, 143);
+  border: solid 2px rgb(143, 143, 143);
+  border-left: none;
+  border-right: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -206,6 +245,7 @@ textarea#message {
   width: 30px;
   padding: 4px;
   font-size: 12px;
+  flex-shrink: 0;
 }
 
 .avatarText {
@@ -245,6 +285,7 @@ textarea#message {
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
+  gap: 6px;
 }
 
 .breadcrumbs > * {
@@ -254,5 +295,79 @@ textarea#message {
 
 .breadcrumbs > .seperator {
   font-weight: 400;
-  margin: 0 6px;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  background-color: rgb(240, 76, 11);
+  color: white;
+  padding: 6px 8px;
+  border-radius: 60px;
+}
+
+.mainTag {
+  font-size: 12px;
+  background-color: rgb(11, 156, 240);
+  padding: 8px 10px;
+  color: white;
+}
+
+.message {
+  padding: 16px;
+}
+
+.messageAuthor {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.messageAuthor > .avatarText {
+  height: 50px;
+  width: 50px;
+  font-size: 20px;
+  padding: 8px;
+}
+
+.message .tag {
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.message .mainTag {
+  font-size: 14px;
+  padding: 8px 10px;
+}
+
+.messageBox {
+  background: rgb(223, 223, 223);
+  color: black;
+  padding: 20px;
+  border: solid 2px rgb(143, 143, 143);
+  border-radius: 12px;
+}
+
+.messageBox::placeholder {
+  color: rgb(0, 0, 0);
+  opacity: 0.7;
+}
+
+.userRole {
+  margin-left: 6px;
+  font-weight: 800;
+}
+
+.ansvarligInfo {
+  margin: 12px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center
+}
+
+.ansvarligInfo > .avatarText {
+  height: 40px;
+  width: 40px;
+  font-size: 14px;
+  padding: 6px;
 }

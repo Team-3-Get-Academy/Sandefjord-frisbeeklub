@@ -13,19 +13,25 @@ function htmlEscape(text) {
 const messageFormLevels = {
   lane: () => /*HTML*/`<div class="messageFormContainer">
         <h3>Velg Bane for Melding</h3>
-        ${Object.entries(model.lanes).map(([id, lane]) => `<button onclick="selectMessageFormLane('${id}')">${lane.name}</button>`).join("")}
+        <div class="buttonList">
+          ${Object.entries(model.lanes).map(([id, lane]) => `<button onclick="selectMessageFormLane('${id}')">${lane.name}</button>`).join("")}
+        </div>
       </div>`,
   topic: () => /*HTML*/`<div class="messageFormContainer">
         <button onclick="setLevel('lane')">Gå tilbake</button>
         <h3>Velg Emne for Melding</h3>
+        <div class="buttonList">
         ${[...model.catagories, 'other'].map(c => `<button onclick="selectMessageFormTopic('${c}')">${c === 'other' ? 'Annet' : c}</button>`).join("")}
-        <button onclick="selectMessageFormTopic(null)">Hopp over</button>
+        </div>
+        <button class="formButton" style="margin-top: 6px" onclick="selectMessageFormTopic(null)">Hopp over</button>
       </div>`,
   hole: () => /*HTML*/`<div class="messageFormContainer">
         <button onclick="setLevel('topic')">Gå tilbake</button>
         <h3>Velg Hull for Melding</h3>
+        <div class="holeList" style="margin-bottom: 6px">
         ${Array.from({length: model.lanes[model.viewState.sendMessage.lane].hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
-        <button onclick="selectMessageFormHoleOther()">Annet</button><button onclick="confirmMessageFormHole()">Bekreft</button>
+        </div>
+        <button class="formButton" onclick="selectMessageFormHoleOther()">Annet</button><button style="margin-left: 6px" class="formButton" onclick="confirmMessageFormHole()">Bekreft</button>
       </div>`,
   message: () => /*HTML*/`<div class="messageFormContainer message">
         <button onclick="setLevel('hole')" style="align-self: start">Gå tilbake</button>
@@ -118,7 +124,7 @@ function LoginPage() {
   `
 }
 
-function adminBreacrumbs(breadcrumbs) {
+function adminBreadcrumbs(breadcrumbs) {
   return /*HTML*/`<div class="breadcrumbs">
     ${breadcrumbs.map((b, i) => {
       if (i === breadcrumbs.length - 1) {
@@ -132,7 +138,7 @@ function adminBreacrumbs(breadcrumbs) {
 
 function adminPanel(){
     return /*HTML*/ `
-    ${adminBreacrumbs([{
+    ${adminBreadcrumbs([{
       text: "Admin Panel",
       href: "admin"
     }])}
@@ -146,20 +152,34 @@ function adminPanel(){
 
 }
 
+function transformDataURL(data) {
+  console.log(data)
+  return ""
+}
+
 function forumButton(msg) {
   const user = msg.userid !== null ? model.users.find(u => u.id == msg.userid) : null;
+  const ansvarlig = msg.ansvarlig !== null ? model.users.find(u => u.id === msg.ansvarlig) : null
 
   return /*HTML*/`<a class="forumButton" href="#admin/messages/${msg.messageid}">
-  <div>
-    <div>${htmlEscape(msg.message)}</div>
+  <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+    <span class="tag mainTag">${msg.status}</span>
+    ${msg.tags ? msg.tags.map(t => `<span class="tag">${t}</span>`).join("") : ''}
   </div>
-  <div style="display: flex; align-items: center; gap: 6px">
+  <div style="display: flex; width: 100%; align-items: center">
+    <div style="flex-grow: 1; text-overflow: ellipsis; overflow: hidden; margin-right: 5px">${htmlEscape(msg.message)}</div>
+    ${AvatarComponent({
+      user: ansvarlig
+    })}
+    <span style="margin-left: 5px">${ansvarlig ? ansvarlig.username : 'Ingen Ansvarlig'}</span>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px;">
   ${AvatarComponent({
     user
   })}
   <span>${user ? user.username : 'Gjest'}</span>
   </div>
-  </a>`//${msg.attachments.map(x=>`<img src=${JSON.stringify(x.data)}><p>${htmlEscape(x.name)}</p>`).join("")}
+  </a>`// ${msg.attachments.map(x=>`<iframe src=${JSON.stringify(transformDataURL(x.data))}></iframe><p>${htmlEscape(x.name)}</p>`).join("")}
 }
 
 function filterMessagesByTopic(lane, topic) {
@@ -214,7 +234,7 @@ function adminMessages(params) {
   let lanes = partitionByLane(filterMessagesByTopic(params.lane, params.topic));
 
   return /*HTML*/`
-  ${adminBreacrumbs([
+  ${adminBreadcrumbs([
     {
       text: "Admin Panel",
       href: "admin"
@@ -236,7 +256,7 @@ function adminMessages(params) {
 }
 
 function adminMessage(params) {
-  const breadcrumbs = adminBreacrumbs([
+  const breadcrumbs = adminBreadcrumbs([
     {
       text: "Admin Panel",
       href: "admin"
@@ -254,17 +274,88 @@ function adminMessage(params) {
   const message = model.messages.find(m => m.messageid == params.message);
   if (!message) return breadcrumbs + "<div>Ukjent Melding</div>";
 
-  return breadcrumbs + JSON.stringify(message)
+  const user = message.userid !== null ? model.users[message.userid] : null;
+  const ansvarlig = message.ansvarlig !== null ? model.users.find(u => u.id === message.ansvarlig) : null
+
+  let extras = ""
+
+  for (const item of message.timeline) {
+    const itemUser = model.users.find(u => u.id === item.userid)
+
+    if (item.message) {
+      extras += /*HTML*/`
+      <div class="messageBox" style="margin-top: 16px">
+        <div class="messageAuthor">
+          ${AvatarComponent({
+            user: itemUser
+          })}
+          <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span> <span class="userRole" style="color: #d38a00">ADMIN</span>
+        </div>
+        <div style="font-size: 18px; font-weight: 500">${htmlEscape(item.message)}</div>
+      </div>
+      `
+    }
+  }
+
+  return /*HTML*/`
+  ${breadcrumbs}
+  <div class="message">
+    <span class="tag mainTag">${message.status}</span>
+    <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; padding: 16px 0;">
+      ${message.tags ? message.tags.map(t => `<span class="tag">${t}</span>`).join("") : ''}
+    </div>
+    <div class="ansvarligInfo">
+      <span style="font-size: 20px; font-weight: 700; margin-right: 12px;">Ansvarlig:</span>
+        ${AvatarComponent({
+          user: ansvarlig
+        })}
+        <span style="font-size: 20px; margin-left: 6px; font-weight: 500">${ansvarlig ? ansvarlig.username : 'Ingen'}</span>
+    </div>
+    <div class="messageBox">
+      <div class="messageAuthor">
+        ${AvatarComponent({
+          user
+        })}
+        <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${user ? user.username : 'Gjest'}</span> <span class="userRole" style="color: #2470d3">OP</span>
+      </div>
+      <div style="font-size: 18px; font-weight: 500">${htmlEscape(message.message)}</div>
+    </div>
+    ${extras}
+    <h3 style="font-weight: 500; margin: 30px 0 10px 0;">Legg til kommentar</h3>
+    <textarea style="resize: none; width: 100%; font-size: 18px; font-weight: 500;" class="messageBox" placeholder="Skriv kommentar her"></textarea>
+    <button>Send kommentar</button>
+  </div>
+  `
 }
 
 function admLanes(){
   return /*HTML*/ `
+  ${adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Baner",
+      href: "lanes"
+    }
+  ])}
   <h2>ADMIN2</h2>
   `
 }
 
 function admUsers(){
   return /*HTML*/ `
+  ${adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Brukere",
+      href: "users"
+    }
+  ])}
   <h2>ADMIN3</h2>
   `
 }

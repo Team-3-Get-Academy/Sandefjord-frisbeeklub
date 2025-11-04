@@ -282,9 +282,10 @@ const model = {
         }
       ],
 
-      status: "Banned!",        // Melding status: profanity
-      ansvarlig: null,
+      status: "Banlyst!",        // Melding status: profanity
+      ansvarlig: 0,
       date: 1760606164285, // Date.now()
+      tags: ["Ikke Bra","Ikke Bra","不好","不好","Not Good","Not Good","Not Good","Не хорошо","Не хорошо","No bueno","No bueno","No bueno","nicht gut","nicht gut",],
 
       references: [
         {

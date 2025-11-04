@@ -15,7 +15,11 @@ function selectMessageFormTopic(subject) {
 }
 
 function selectMessageFormHole(hole) {
-  model.viewState.sendMessage.hole = hole;
+  if (model.viewState.sendMessage.hole === hole) {
+    model.viewState.sendMessage.hole = null;
+  } else {
+    model.viewState.sendMessage.hole = hole;
+  }
 
   renderView()
 }
