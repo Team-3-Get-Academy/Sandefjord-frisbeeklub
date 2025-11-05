@@ -10,6 +10,11 @@ const routes = [
     setup: setupUser
   },
   {
+    path: /^register$/,
+    view: registerPage,
+    setup: setupRegister
+  },
+  {
     path: /^admin$/,
     view: adminPanel
   },

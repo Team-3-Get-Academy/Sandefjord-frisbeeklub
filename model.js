@@ -15,12 +15,14 @@
 
 const GENDERS = {  
   MALE: "m",
-  FEMALE: "f"
+  FEMALE: "f",
+  OTHER: "other"
 }
 
 function saveModel() {
   const json = {
     users: model.users,
+    userCounter: model.appState.userCounter,
     messages: model.messages,
     messageCounter: model.appState.messageCounter,
     auth: model.appState.auth ? model.appState.auth.id : null
@@ -36,6 +38,7 @@ function loadModel() {
   const json = JSON.parse(saveData)
 
   model.users = json.users;
+  model.appState.userCounter = json.userCounter;
   model.messages = json.messages;
 
   model.appState.messageCounter = json.messageCounter
@@ -48,7 +51,8 @@ const model = {
     routeParams: {},
     auth: null, // hvis logget inn, bruker eller null hvis logget ut
     navOpen: false,
-    messageCounter: 4 // used to track latest message id, increment to get new
+    messageCounter: 4, // used to track latest message id, increment to get new
+    userCounter: 3
   },
 
   viewState: {
@@ -74,7 +78,7 @@ const model = {
       email: "",
       password: "",
       gender: "",
-      age: ""
+      dob: ""
     },
 
     // lane = null #admin/lanes/messages

@@ -98,6 +98,61 @@ function toAttribute(val) {
   return JSON.stringify(val.toString())
 }
 
+function registerPage() {
+  return /*HTML*/`
+  <h1>REGISTRER BRUKER</h1>
+  <form onsubmit="registerSubmit(event)">
+  <label for="username">Ønsket Brukernavn:</label><br>
+    <input
+      oninput="updateRegisterUser()"
+      id="username"
+      value=${toAttribute(model.viewState.register.username)}
+      name="username"
+      type="text"
+      required
+    >  
+  <br><br>
+  <label for="email">E-postadresse:</label><br>
+    <input
+      oninput="updateRegisterEmail()"
+      id="email"
+      value=${toAttribute(model.viewState.register.email)}
+      name="email"
+      type="email"
+      required
+    >
+    <br><br>
+    <label for="password">Passord:</label><br>
+    <input
+      oninput="updateRegisterPassword()"
+      id="password"
+      value=${toAttribute(model.viewState.register.password)}
+      name="password"
+      type="password"
+      required
+    >
+    <br><br>
+    <label for="gender">Kjønn:</label><br>
+    <input type="radio" id="male" name="gender" value="GENDERS.MALE" onclick="updateRegisterGender(this.value)" required>Mann<br>
+    <input type="radio" id="female" name="gender" value="GENDERS.FEMALE" onclick="updateRegisterGender(this.value)" required>Kvinne<br>
+    <input type="radio" id="other" name="gender" value="GENDERS.OTHER" onclick="updateRegisterGender(this.value)" required>Annet<br>
+    
+    <br>
+    <label for="age">Fødselsdato:</label><br>
+    <input
+      oninput="updateRegisterAge()"
+      id="age"
+      value=${toAttribute(model.viewState.register.dob)}
+      name="age"
+      type="date"
+      required
+    >
+    <br><br><br>
+    <button>Registrer Bruker</button>
+  </form>
+  `
+}
+
 function LoginPage() {
   return /*HTML*/`
   <form onsubmit="loginSubmit(event)">
@@ -417,7 +472,7 @@ function navigationMenu() {
       </div>
       <div class="navlinks">
         <a href="#login" onclick="closeNavigation()">Logg inn</a>
-        <a>Registrer</a>
+        <a href="#register" onclick="closeNavigation()">Registrer</a>
         ${navMenuAdmin()}
       </div>
     </div>
