@@ -298,7 +298,7 @@ function adminMessage(params) {
           })}
           <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>${userRolesComponent(itemUser, message)}
         </div>
-        <div style="font-size: 18px; font-weight: 500">${htmlEscape(item.message)}</div>
+        <div style="font-size: 18px; font-weight: 500; white-space: break-spaces; word-wrap: break-word;">${htmlEscape(item.message)}</div>
         <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(item.date).toString()}</p>
       </div>
       `
@@ -322,13 +322,16 @@ function adminMessage(params) {
       `
     }
   }
-
   return /*HTML*/`
   ${breadcrumbs}
   <div class="message">
-    <span class="tag mainTag">${message.status}</span>
+    ${model.viewState.viewMessages.isEditingStatus ? 
+      `<input style="width: 100px" value=${toAttribute(model.viewState.viewMessages.statusInput)} id="statusInput" oninput="updateEditStatusInput()" class="tag mainTag"><button class="confirmButton" onclick="confirmEditStatus(${message.messageid})"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>` :
+      `<span class="tag mainTag">${htmlEscape(message.status)}</span><button class="editButton" onclick="editStatus(${message.messageid})"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>`
+    }
     <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; padding: 16px 0;">
-      ${message.tags ? message.tags.map(t => `<span class="tag">${t}</span>`).join("") : ''}
+      ${message.tags ? message.tags.map(t => `<span class="tag flex-hoz-center" style="padding: 6px 4px 6px 8px">${t}<svg class="removeBtn" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>`).join("") : ''}
+      <span class="tag flex-hoz-center addTag"><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>Legg til</span>
     </div>
     <div class="ansvarligInfo">
       <span style="font-size: 20px; font-weight: 700; margin-right: 12px;">Ansvarlig:</span>
@@ -344,12 +347,12 @@ function adminMessage(params) {
         })}
         <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${user ? user.username : 'Gjest'}</span>${userRolesComponent(user, message)}
       </div>
-      <div style="font-size: 18px; font-weight: 500">${htmlEscape(message.message)}</div>
+      <div style="font-size: 18px; font-weight: 500; white-space: break-spaces; word-wrap: break-word;">${htmlEscape(message.message)}</div>
       <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(message.date).toString()}</p>
     </div>
     ${extras}
     <h3 style="font-weight: 500; margin: 30px 0 10px 0;">Legg til kommentar</h3>
-    <textarea id="messageCommentInput" oninput="updateMessageCommentInput()" style="resize: none; width: 100%; font-size: 18px; font-weight: 500;" class="messageBox" placeholder="Skriv kommentar her">${htmlEscape(model.viewState.viewMessages.writeComment.comment)}</textarea>
+    <textarea id="messageCommentInput" oninput="updateMessageCommentInput()" style="resize: none; width: 100%; font-size: 18px; font-weight: 500;" class="messageBox" placeholder="Skriv kommentar her">${htmlEscape(model.viewState.viewMessages.commentInput)}</textarea>
     <button class="formButton" style="margin-top: 6px" onclick="sendMessageComment(${message.messageid})">Send kommentar</button>
   </div>
   `

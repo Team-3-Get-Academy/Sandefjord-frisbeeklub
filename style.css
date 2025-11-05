@@ -296,6 +296,7 @@ textarea#message {
   font-size: 10px;
   font-weight: 600;
   background-color: rgb(240, 76, 11);
+  border: none;
   color: white;
   padding: 6px 8px;
   border-radius: 60px;
@@ -413,4 +414,57 @@ textarea#message {
 
 .text-12 {
   font-size: 12px;
+}
+
+.tag > .removeBtn {
+  color: white;
+  cursor: pointer;
+}
+
+.tag > .removeBtn:hover {
+  color: rgb(172, 37, 37);
+}
+
+.editButton, .confirmButton {
+  vertical-align: middle;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  height: 30px;
+  width: 30px;
+  margin-left: 5px;
+}
+
+.editButton {
+  color: rgb(66, 66, 66);
+}
+
+.editButton:hover {
+  background-color: rgb(66, 66, 66);
+  color: white;
+}
+
+.confirmButton {
+  color: #6bda99;
+}
+
+.confirmButton:hover {
+  background-color: #6bda99;
+  color: white;
+}
+
+.editButton > svg, .confirmButton > svg {
+  vertical-align: middle;
+}
+
+.addTag {
+  padding: 6px 10px 6px 4px;
+  background: #6bda99;
+  color: #333333;
+  cursor: pointer;
+}
+
+.addTag:hover {
+  background: #81fab3;
+  color: #000000;
 }

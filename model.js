@@ -83,11 +83,9 @@ const model = {
     // catagory = (string) && message = (object) #admin/lanes/{lane}/messages/{catagory}/{messageid}
     // catagory = null && message = (object) #admin/lanes/{lane}/messages/{message}
     viewMessages: {
-      writeComment: {
-        setStatus: null,
-        comment: "",
-        attachments: []
-      },
+      commentInput: "",
+      isEditingStatus: false,
+      statusInput: "",
 
       updateComment: {
         commentid: null, // null = no comment selected, else index in timeline, -1 = message itself
