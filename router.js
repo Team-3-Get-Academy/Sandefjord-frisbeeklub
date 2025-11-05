@@ -1,5 +1,3 @@
-model.appState.auth = model.users[0]
-
 const routes = [
   {
     path: /^$/, // empty
