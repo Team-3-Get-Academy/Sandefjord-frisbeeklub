@@ -2,6 +2,7 @@ function selectMessageFormLane(lane) {
   if (!model.lanes[lane]) return alert("Internal Error: Lane not found.")
 
   model.viewState.sendMessage.lane = lane;
+  model.viewState.sendMessage.hole = null;
   model.viewState.sendMessage.level = "topic";
 
   renderView()
@@ -74,6 +75,8 @@ function removeMessageAttachment(index) {
 }
 
 async function sendMessage() {
+  if (!model.viewState.sendMessage.message) return alert("Du må skrive en melding");
+
   const attachments = []
 
   for (const attachment of model.viewState.sendMessage.attachments) {

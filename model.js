@@ -83,9 +83,6 @@ const model = {
     // catagory = (string) && message = (object) #admin/lanes/{lane}/messages/{catagory}/{messageid}
     // catagory = null && message = (object) #admin/lanes/{lane}/messages/{message}
     viewMessages: {
-      lane: null, // (string) if no lane, show lane selection screen
-      catagory: null, // (string) else if no catagory, show list of catagories
-      message: null, // (object) else if no message selected, show list of messages in catagory. else show message content
       writeComment: {
         setStatus: null,
         comment: "",
@@ -148,7 +145,7 @@ const model = {
       ],
       rating: 0,
       email: "ole@bribery.no",
-      password: "ᒣ⍑ᒷ ▭ ᑑ⚍╎ᔮ·ǀ· ▭ ᕊ??ᒍ∴リ ▭ ⎓ᒍ̇/▭ ⋮⚍ᒲi!ϟNorges Prisen ▭ ᒍ⍊ᒷ∷ ▭ ᒣ⍑ᒷ ▭ |:ᖋ∩॥ ▭ ∷ᒷ↸ ▭ ↸ᒍ┤ ",
+      password: "ole",
       picture: null,
       priority: false,
       dob: "01/01/1800",
@@ -302,7 +299,7 @@ const model = {
         },
         {
           userid: 0, // Ole Hagen
-          status: "Banned!",
+          status: "Banlyst!",
           date: 1760606164285 // Date.now()
         }
       ]

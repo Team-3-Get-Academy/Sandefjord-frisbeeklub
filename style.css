@@ -168,11 +168,6 @@ button {
   margin: 0;
 }
 
-.messageFormContainer.message {
-  display: flex;
-  flex-direction: column;
-}
-
 .holeList {
   display: flex;
   flex-wrap: wrap;
@@ -317,10 +312,17 @@ textarea#message {
   padding: 16px;
 }
 
+.messageFormContainer.message {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
 .messageAuthor {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .messageAuthor > .avatarText {
@@ -354,7 +356,6 @@ textarea#message {
 }
 
 .userRole {
-  margin-left: 6px;
   font-weight: 800;
 }
 
@@ -370,4 +371,46 @@ textarea#message {
   width: 40px;
   font-size: 14px;
   padding: 6px;
+}
+
+.messageUpdateInfo {
+  display: flex;
+  align-items: center;
+  /*flex-wrap: wrap;
+  font-size: 16px;
+  gap: 6px 0*/
+}
+
+.messageUpdateContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 16px;
+  gap: 2px 0
+}
+
+.messageUpdateInfo .avatarText {
+  height: 40px;
+  width: 40px;
+  font-size: 14px;
+  padding: 6px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.flex-hoz-center {
+  display: flex;
+  align-items: center;
+}
+
+.gap-5 {
+  gap: 5px;
+}
+
+.mb-12 {
+  margin-bottom: 12px;
+}
+
+.text-12 {
+  font-size: 12px;
 }

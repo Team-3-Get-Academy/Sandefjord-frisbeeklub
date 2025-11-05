@@ -18,7 +18,7 @@ const messageFormLevels = {
         </div>
       </div>`,
   topic: () => /*HTML*/`<div class="messageFormContainer">
-        <button onclick="setLevel('lane')">Gå tilbake</button>
+        <button onclick="setLevel('lane')" class="formButton flex-hoz-center gap-5 mb-12 text-12" style="padding: 5px 8px"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>Gå tilbake</button>
         <h3>Velg Emne for Melding</h3>
         <div class="buttonList">
         ${[...model.catagories, 'other'].map(c => `<button onclick="selectMessageFormTopic('${c}')">${c === 'other' ? 'Annet' : c}</button>`).join("")}
@@ -26,7 +26,7 @@ const messageFormLevels = {
         <button class="formButton" style="margin-top: 6px" onclick="selectMessageFormTopic(null)">Hopp over</button>
       </div>`,
   hole: () => /*HTML*/`<div class="messageFormContainer">
-        <button onclick="setLevel('topic')">Gå tilbake</button>
+        <button onclick="setLevel('topic')" class="formButton flex-hoz-center gap-5 mb-12 text-12" style="padding: 5px 8px"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>Gå tilbake</button>
         <h3>Velg Hull for Melding</h3>
         <div class="holeList" style="margin-bottom: 6px">
         ${Array.from({length: model.lanes[model.viewState.sendMessage.lane].hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
@@ -34,7 +34,7 @@ const messageFormLevels = {
         <button class="formButton" onclick="selectMessageFormHoleOther()">Annet</button><button style="margin-left: 6px" class="formButton" onclick="confirmMessageFormHole()">Bekreft</button>
       </div>`,
   message: () => /*HTML*/`<div class="messageFormContainer message">
-        <button onclick="setLevel('hole')" style="align-self: start">Gå tilbake</button>
+        <button onclick="setLevel('hole')" class="formButton flex-hoz-center gap-5 mb-12 text-12" style="padding: 5px 8px; align-self: start"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>Gå tilbake</button>
         <h3>Skriv Melding</h3>
         <textarea oninput="updateMessage()" id="message">${htmlEscape(model.viewState.sendMessage.message)}</textarea>
         ${model.viewState.sendMessage.attachments.map((file, i) => `<button onclick="removeMessageAttachment(${i})">Slett ${file.name}</button>`).join("")}
@@ -179,6 +179,7 @@ function forumButton(msg) {
   })}
   <span>${user ? user.username : 'Gjest'}</span>
   </div>
+  <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(msg.date).toString()}</p>
   </a>`// ${msg.attachments.map(x=>`<iframe src=${JSON.stringify(transformDataURL(x.data))}></iframe><p>${htmlEscape(x.name)}</p>`).join("")}
 }
 
@@ -255,6 +256,12 @@ function adminMessages(params) {
   `
 }
 
+function userRolesComponent(user, message, extraStyles = "") {
+  const roles = getMessageRoles(user, message)
+
+  return roles.map(role => `<span class="userRole" style="color: ${role === "OP" ? '#2470d3' : '#d38a00'}; ${extraStyles}">&nbsp;${role}</span>`).join("")
+}
+
 function adminMessage(params) {
   const breadcrumbs = adminBreadcrumbs([
     {
@@ -289,9 +296,28 @@ function adminMessage(params) {
           ${AvatarComponent({
             user: itemUser
           })}
-          <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span> <span class="userRole" style="color: #d38a00">ADMIN</span>
+          <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>${userRolesComponent(itemUser, message)}
         </div>
         <div style="font-size: 18px; font-weight: 500">${htmlEscape(item.message)}</div>
+        <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(item.date).toString()}</p>
+      </div>
+      `
+    } else if (item.status) {
+      extras += /*HTML*/`
+      <div class="messageUpdateInfo" style="margin-top: 16px">
+      ${AvatarComponent({
+            user: itemUser
+      })}
+      <div>
+        <div class="messageUpdateContainer">
+          <span style="margin-right: 4px;">
+            <span style="font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>${userRolesComponent(itemUser, message, extraStyles = "font-size: 12px;")}
+          </span>
+          <span style="margin-right: 8px; font-weight: 500">endret status til</span>
+          <span class="tag mainTag">${htmlEscape(item.status)}</span>
+        </div>
+        <p style="font-size: 12px; white-space: break-spaces; margin: 0;">${new Date(item.date).toString()}</p>
+      </div>
       </div>
       `
     }
@@ -316,14 +342,15 @@ function adminMessage(params) {
         ${AvatarComponent({
           user
         })}
-        <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${user ? user.username : 'Gjest'}</span> <span class="userRole" style="color: #2470d3">OP</span>
+        <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${user ? user.username : 'Gjest'}</span>${userRolesComponent(user, message)}
       </div>
       <div style="font-size: 18px; font-weight: 500">${htmlEscape(message.message)}</div>
+      <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(message.date).toString()}</p>
     </div>
     ${extras}
     <h3 style="font-weight: 500; margin: 30px 0 10px 0;">Legg til kommentar</h3>
-    <textarea style="resize: none; width: 100%; font-size: 18px; font-weight: 500;" class="messageBox" placeholder="Skriv kommentar her"></textarea>
-    <button>Send kommentar</button>
+    <textarea id="messageCommentInput" oninput="updateMessageCommentInput()" style="resize: none; width: 100%; font-size: 18px; font-weight: 500;" class="messageBox" placeholder="Skriv kommentar her">${htmlEscape(model.viewState.viewMessages.writeComment.comment)}</textarea>
+    <button class="formButton" style="margin-top: 6px" onclick="sendMessageComment(${message.messageid})">Send kommentar</button>
   </div>
   `
 }

@@ -1,3 +1,5 @@
+model.appState.auth = model.users[0]
+
 const routes = [
   {
     path: /^$/, // empty
@@ -24,6 +26,7 @@ const routes = [
   {
     path: /^admin\/messages\/([^\/]+)$/,
     view: adminMessage,
+    setup: setupViewMessage,
     paramKeys: [
       "message"
     ]
