@@ -65,6 +65,12 @@ button {
   font-weight: 500;
 }
 
+.navbar > h3 {
+  color: white;
+  text-align: center;
+  margin: 0;
+}
+
 .hamburger {
   border: none;
   border-radius: 5px;

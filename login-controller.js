@@ -27,6 +27,13 @@ function loginSubmit(e) {
   navigate("")
 }
 
+function logout() {
+  model.appState.auth = null
+  closeNavigation()
+  saveModel();
+  navigate("")
+}
+
 function setupUser() {
   model.viewState.login.email = ""
   model.viewState.login.password = ""

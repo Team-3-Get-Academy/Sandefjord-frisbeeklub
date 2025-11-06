@@ -29,7 +29,7 @@ const messageFormLevels = {
         <button onclick="setLevel('topic')" class="formButton flex-hoz-center gap-5 mb-12 text-12" style="padding: 5px 8px"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>Gå tilbake</button>
         <h3>Velg Hull for Melding</h3>
         <div class="holeList" style="margin-bottom: 6px">
-        ${Array.from({length: model.lanes[model.viewState.sendMessage.lane].hull}).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
+        ${Array.from({ length: model.lanes[model.viewState.sendMessage.lane].hull }).map((_, i) => `<button ${model.viewState.sendMessage.hole === (i + 1) ? 'class="selectedBtn"' : ''} onclick="selectMessageFormHole(${i + 1})">${i + 1}</button>`).join("")}
         </div>
         <button class="formButton" onclick="selectMessageFormHoleOther()">Annet</button><button style="margin-left: 6px" class="formButton" onclick="confirmMessageFormHole()">Bekreft</button>
       </div>`,
@@ -51,7 +51,7 @@ function getInitals(username) {
     parts = [parts[0], parts[parts.length - 1]]
   }
 
-  return parts.map(x=>x[0].toUpperCase()).join("")
+  return parts.map(x => x[0].toUpperCase()).join("")
 }
 
 const avatarColors = ["avatarBlue", "avatarRed", "avatarYellow", "avatarGreen"]
@@ -66,7 +66,7 @@ function AvatarComponent(properties) {
   if (false && properties.user.picture) {
 
   } else {
-    const avatarColor = avatarColors[properties.user.id % avatarColors.length] 
+    const avatarColor = avatarColors[properties.user.id % avatarColors.length]
     return /*HTML*/`
     <div class="avatarText ${avatarColor}${properties.class ? ` ${properties.class}` : ''}">
       ${htmlEscape(getInitals(properties.user.username))}
@@ -182,21 +182,21 @@ function LoginPage() {
 function adminBreadcrumbs(breadcrumbs) {
   return /*HTML*/`<div class="breadcrumbs">
     ${breadcrumbs.map((b, i) => {
-      if (i === breadcrumbs.length - 1) {
-        return `<span>${htmlEscape(b.text)}</span>`
-      } else {
-        return `<a href="#${breadcrumbs.slice(0, i+1).map(b=>b.href).join("/")}">${b.text}</a>`
-      }
-    }).join(`<span class="seperator">/</span>`)}
+    if (i === breadcrumbs.length - 1) {
+      return `<span>${htmlEscape(b.text)}</span>`
+    } else {
+      return `<a href="#${breadcrumbs.slice(0, i + 1).map(b => b.href).join("/")}">${b.text}</a>`
+    }
+  }).join(`<span class="seperator">/</span>`)}
   </div>`
 }
 
-function adminPanel(){
-    return /*HTML*/ `
+function adminPanel() {
+  return /*HTML*/ `
     ${adminBreadcrumbs([{
-      text: "Admin Panel",
-      href: "admin"
-    }])}
+    text: "Admin Panel",
+    href: "admin"
+  }])}
     <h2 style="text-align: center">Admin Panel</h2>
     <div class="navlinks">
       <a href="#admin/messages">Se Meldinger</a>
@@ -224,8 +224,8 @@ function forumButton(msg) {
   <div style="display: flex; width: 100%; align-items: center">
     <div style="flex-grow: 1; text-overflow: ellipsis; overflow: hidden; margin-right: 5px">${htmlEscape(msg.message)}</div>
     ${AvatarComponent({
-      user: ansvarlig
-    })}
+    user: ansvarlig
+  })}
     <span style="margin-left: 5px">${ansvarlig ? ansvarlig.username : 'Ingen Ansvarlig'}</span>
   </div>
   <div style="display: flex; align-items: center; gap: 6px;">
@@ -240,7 +240,7 @@ function forumButton(msg) {
 
 function filterMessagesByTopic(lane, topic) {
   const messages = model.messages.filter(m => userCanAccessLane(model.appState.auth, m.lane));
-  
+
   return messages
 }
 
@@ -251,7 +251,7 @@ const topicNames = {
 
 function partitionByCatagory(messages) {
   let catagories = []
-  
+
   for (const message of messages) {
     if (catagories.includes(message.subject)) continue;
     catagories.push(message.subject)
@@ -272,7 +272,7 @@ function partitionByCatagory(messages) {
 
 function partitionByLane(messages) {
   let lanes = []
-  
+
   for (const message of messages) {
     if (lanes.includes(message.lane)) continue;
     lanes.push(message.lane)
@@ -349,8 +349,8 @@ function adminMessage(params) {
       <div class="messageBox" style="margin-top: 16px">
         <div class="messageAuthor">
           ${AvatarComponent({
-            user: itemUser
-          })}
+        user: itemUser
+      })}
           <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>${userRolesComponent(itemUser, message)}
         </div>
         <div style="font-size: 18px; font-weight: 500; white-space: break-spaces; word-wrap: break-word;">${htmlEscape(item.message)}</div>
@@ -361,7 +361,7 @@ function adminMessage(params) {
       extras += /*HTML*/`
       <div class="messageUpdateInfo" style="margin-top: 16px">
       ${AvatarComponent({
-            user: itemUser
+        user: itemUser
       })}
       <div>
         <div class="messageUpdateContainer">
@@ -380,7 +380,7 @@ function adminMessage(params) {
   return /*HTML*/`
   ${breadcrumbs}
   <div class="message">
-    ${model.viewState.viewMessages.isEditingStatus ? 
+    ${model.viewState.viewMessages.isEditingStatus ?
       `<input style="width: 100px" value=${toAttribute(model.viewState.viewMessages.statusInput)} id="statusInput" oninput="updateEditStatusInput()" class="tag mainTag"><button class="confirmButton" onclick="confirmEditStatus(${message.messageid})"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>` :
       `<span class="tag mainTag">${htmlEscape(message.status)}</span><button class="editButton" onclick="editStatus(${message.messageid})"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>`
     }
@@ -391,15 +391,15 @@ function adminMessage(params) {
     <div class="ansvarligInfo">
       <span style="font-size: 20px; font-weight: 700; margin-right: 12px;">Ansvarlig:</span>
         ${AvatarComponent({
-          user: ansvarlig
-        })}
+      user: ansvarlig
+    })}
         <span style="font-size: 20px; margin-left: 6px; font-weight: 500">${ansvarlig ? ansvarlig.username : 'Ingen'}</span>
     </div>
     <div class="messageBox">
       <div class="messageAuthor">
         ${AvatarComponent({
-          user
-        })}
+      user
+    })}
         <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${user ? user.username : 'Gjest'}</span>${userRolesComponent(user, message)}
       </div>
       <div style="font-size: 18px; font-weight: 500; white-space: break-spaces; word-wrap: break-word;">${htmlEscape(message.message)}</div>
@@ -413,7 +413,7 @@ function adminMessage(params) {
   `
 }
 
-function admLanes(){
+function admLanes() {
   return /*HTML*/ `
   ${adminBreadcrumbs([
     {
@@ -429,7 +429,7 @@ function admLanes(){
   `
 }
 
-function admUsers(){
+function admUsers() {
   return /*HTML*/ `
   ${adminBreadcrumbs([
     {
@@ -451,7 +451,8 @@ function navigationBar() {
       <img src="./assets/logo.png" style="pointer-events: none; vertical-align: bottom;"></a>
     </a>
     <h1>Sandefjord Frisbeeklub</h1>
-    <button class="hamburger" style="margin-left: auto;" onclick="openNavigation()">
+    <h3 style="margin-left: auto; max-width: 50%">${navUserDisplay()}</h3>
+    <button class="hamburger" style="margin-left: 5%;" onclick="openNavigation()">
       <span></span>
       <span></span>
       <span></span>
@@ -471,12 +472,24 @@ function navigationMenu() {
         </button>
       </div>
       <div class="navlinks">
-        <a href="#login" onclick="closeNavigation()">Logg inn</a>
-        <a href="#register" onclick="closeNavigation()">Registrer</a>
-        ${navMenuAdmin()}
+      ${navMenuAuthCheck()}
+      ${navMenuAdmin()}
       </div>
-    </div>
-  </div>`
+      </div>
+      </div>`
+}
+
+function navMenuAuthCheck() {
+  if (model.appState.auth == null) {
+    return /*HTML*/ `
+        <a href="#login" onclick="closeNavigation()">Logg inn</a>
+        <a href="#register" onclick="closeNavigation()">Registrer</a>`
+  }
+  else {
+    return /*HTML*/ `
+    <a href="" onclick="logout()">Logg Ut</a>
+    `
+  }
 }
 
 function navMenuAdmin() {
@@ -487,6 +500,17 @@ function navMenuAdmin() {
           Admin Panel
         </a>
     `
+  }
+  else {
+    return ""
+  }
+}
+
+function navUserDisplay() {
+  let user = ""
+  if (model.appState.auth != null) {
+    user = model.appState.auth.username
+    return "Velkommen, " + user
   }
   else {
     return ""
