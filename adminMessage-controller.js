@@ -33,6 +33,7 @@ function sendMessageComment(messageID) {
 
 function setupViewMessage() {
   model.viewState.viewMessages.commentInput = ""
+  model.viewState.viewMessages.isEditingStatus = false;
 }
 
 function editStatus(messageID) {
@@ -77,5 +78,6 @@ function confirmEditStatus(messageID) {
   message.status = newStatus;
   message.timeline.push(event)
 
+  saveModel()
   renderView()
 }

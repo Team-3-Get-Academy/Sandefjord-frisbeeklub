@@ -58,7 +58,7 @@ const avatarColors = ["avatarBlue", "avatarRed", "avatarYellow", "avatarGreen"]
 
 function AvatarComponent(properties) {
   if (!properties.user) return /*HTML*/`
-  <div class="avatarText${properties.class ? ` ${properties.class}` : ''}">
+  <div class="avatarText${properties.class ? ` ${properties.class}` : ''}" ${properties.extra || ''}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e8eaed"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
   </div>
   `
@@ -68,8 +68,9 @@ function AvatarComponent(properties) {
   } else {
     const avatarColor = avatarColors[properties.user.id % avatarColors.length]
     return /*HTML*/`
-    <div class="avatarText ${avatarColor}${properties.class ? ` ${properties.class}` : ''}">
+    <div class="avatarText ${avatarColor}${properties.class ? ` ${properties.class}` : ''}" ${properties.extra || ''}>
       ${htmlEscape(getInitals(properties.user.username))}
+      ${properties.extraInner || ''}
     </div>
     `
   }
@@ -200,6 +201,7 @@ function adminPanel() {
     <h2 style="text-align: center">Admin Panel</h2>
     <div class="navlinks">
       <a href="#admin/messages">Se Meldinger</a>
+      <a href="#admin/tasks">Se Oppgaver</a>
       <a href="#admin/lanes">Administrer Baner</a>
       <a href="#admin/users">Administrer Brukere</a>
     </div>
@@ -212,21 +214,297 @@ function transformDataURL(data) {
   return ""
 }
 
+function newTask() {
+  return /*HTML*/`
+  ${adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Oppgaver",
+      href: "tasks"
+    },
+    {
+      text: "Ny Oppgave",
+      href: "@new"
+    }
+  ])}
+  <h2 style="text-align: center">Ny Oppgave</h2>
+  <div style="display: flex; flex-direction: column; padding: 16px;">
+    <label for="lane-select">Velg bane:</label>
+    <select id="lane-select" oninput="updateNewTaskLane()">
+      <option value="" disabled ${model.viewState.createTask.lane ? '' : 'selected'} hidden>Ikke Valgt</option>
+      ${listUserLanes(model.appState.auth).map((l => /*HTML*/`
+        <option ${model.viewState.createTask.lane === l ? 'selected' : ''} value=${toAttribute(l)}>${htmlEscape(model.lanes[l].name)}</option>
+      `))}
+    </select>
+    <label for="lane-select">Velg hull:</label>
+    <select id="hole-select" oninput="updateNewTaskHole()">
+      ${
+        model.viewState.createTask.lane !== null ?
+        /*HTML*/`
+        <option ${model.viewState.createTask.hole === null ? 'selected' : ''} value="none">Generell</option>
+        ${Array.from({ length: model.lanes[model.viewState.createTask.lane].hull }).map((_, i) => {
+          return /*HTML*/`<option ${model.viewState.createTask.hole === i ? 'selected' : ''} value=${toAttribute(i)}>Hull #${i +1}</option>`
+        })}
+        ` :
+        /*HTML*/`<option value="" disabled selected hidden>Du må velge en bane først.</option>`
+    }
+    </select>
+    <label for="title">Tittel:</label>
+    <input id="title" value=${toAttribute(model.viewState.createTask.title)} oninput="updateNewTaskTitle()">
+    <label for="description">Beskrivelse:</label>
+    <textarea oninput="updateNewTaskDesc()" style="resize: none; height: 100px" id="description">${htmlEscape(model.viewState.createTask.description)}</textarea>
+    <button class="formButton" onclick="createNewTask()">Opprett Oppgave</button>
+  </div>
+  `
+}
+
+function filterTasks() {
+  const tasks = model.tasks.filter(t => userCanAccessLane(model.appState.auth, t.lane));
+  
+  return tasks
+}
+
+function taskButton(msg) {
+  const user = msg.admin !== null ? model.users.find(u => u.id == msg.admin) : null;
+
+  let limit = document.body.clientWidth < 700 ? 2 : 5;
+
+  const remainder = msg.assigned.length - limit;
+  
+  const assigned = remainder <= 1 ? msg.assigned : [
+    ...msg.assigned.slice(0, limit),
+    remainder <= 99 ? `+${remainder}` : "99+"
+  ]
+
+  return /*HTML*/`<a class="forumButton" href="#admin/tasks/${msg.id}">
+  <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+    <span class="tag mainTag">${htmlEscape(msg.status)}</span>
+  </div>
+  <div style="display: flex; width: 100%; align-items: center; margin-bottom: 5px;">
+    <div style="flex-grow: 1; white-space: break-spaces; margin-right: 5px; font-weight: 600;">${htmlEscape(msg.title)}</div>
+    <div class="assingees" onclick="event.preventDefault()" oncontextmenu="event.preventDefault()">
+      ${assigned.map(assignee => {
+        if (typeof assignee === "string") {
+          return /*HTML*/`<div class="avatarText" name="${remainder} andre">
+            ${assignee}
+          </div>`
+        }
+
+        const user = model.users.find(u => u.id == assignee);
+
+        return AvatarComponent({
+          user,
+          extra: `name=${toAttribute(user ? user.username : 'Ukjent')}`
+        })
+      }).join("")}
+    </div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px;">
+  ${AvatarComponent({
+    user
+  })}
+  <span>${user ? user.username : 'Ukjent'}</span>
+  </div>
+  <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(msg.date).toString()}</p>
+  </a>`// ${msg.attachments.map(x=>`<iframe src=${JSON.stringify(transformDataURL(x.data))}></iframe><p>${htmlEscape(x.name)}</p>`).join("")}
+}
+
+function adminTask(params) {
+  const breadcrumbs = adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Oppgaver",
+      href: "tasks"
+    },
+    {
+      text: `Oppgave ${params.task}`,
+      href: encodeURIComponent(params.task)
+    }
+  ])
+
+  const task = model.tasks.find(t => t.id == params.task);
+
+  if (!task) return breadcrumbs + "<div>Ukjent Oppgave</div>"
+
+  const owner = task.admin !== null ? model.users.find(u => u.id == task.admin) : null;
+
+  if (model.viewState.viewTask.isEditingAnsvarlig) {
+    return /*HTML*/`
+    <div style="display: flex; flex-direction: column; height: 100%;">
+      ${breadcrumbs}
+      <div style="padding: 16px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
+        <h3 style="margin-bottom: 0">Ansvarlig for</h3>
+        <h2 style="font-weight: 600; margin-top: 0">${htmlEscape(task.title)}</h2>
+        <div class="assignedList">
+          <div>
+            <h3 style="margin: 0; margin-bottom: 12px; font-weight: 600; font-size: 16px; color: #d38a00">HOVEDANSVARLIG</h3>
+            <div class="messageAuthor">
+              ${AvatarComponent({
+                user: owner
+              })}
+              <span style="font-size: 20px; margin-left: 12px; font-weight: 600;">${htmlEscape(owner ? owner.username : 'Ukjent')}</span>
+            </div>
+            ${
+              canAdminTask(model.appState.auth, task) ?
+              /*HTML*/`<button class="formButton">Endre</button>` :
+              /*HTML*/`<p style="margin: 0; font-size: 16px; font-weight: 500; color: #ff3e3e">
+                Du har ikke rettigheter til å administrer hovedansvarlig.
+              </p>`
+            }
+          </div>
+          ${task.assigned.map(assignee => {
+            const user = model.users.find(u => u.id == assignee);
+
+            return /*HTML*/`
+            <div>
+              <h3 style="margin: 0; margin-bottom: 12px; font-weight: 600; font-size: 16px; color: #2470d3">ANSVARLIG</h3>
+              <div class="messageAuthor">
+                ${AvatarComponent({
+                  user
+                })}
+                <span style="font-size: 20px; margin-left: 12px; font-weight: 600;">${htmlEscape(user ? user.username : 'Ukjent')}</span>
+              </div>
+              ${
+                canAdminTask(model.appState.auth, task) ?
+                /*HTML*/`<button class="deleteButton">Slett Ansvarlig</button>` :
+                /*HTML*/`<p style="margin: 0; font-size: 16px; font-weight: 500; color: #ff3e3e">
+                  Du har ikke rettigheter til å administrer ansvarlige.
+                </p>`
+              }
+            </div>
+            `
+          }).join("")}
+          ${canAdminTask(model.appState.auth, task) ?
+            /*HTML*/`<button class="flex-hoz-center">
+            <svg style="margin-right: 16px" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M440-440H240q-17 0-28.5-11.5T200-480q0-17 11.5-28.5T240-520h200v-200q0-17 11.5-28.5T480-760q17 0 28.5 11.5T520-720v200h200q17 0 28.5 11.5T760-480q0 17-11.5 28.5T720-440H520v200q0 17-11.5 28.5T480-200q-17 0-28.5-11.5T440-240v-200Z"/></svg>
+            Legg til ansvarlig
+          </button>` :
+            /*HTML*/`<div style="margin: 0; font-size: 16px; font-weight: 500; color: #ff3e3e">
+                Du har ikke rettigheter til å legge til ansvarlig.
+              </div>`
+          }
+        </div>
+        <button class="formButton" style="margin-top: 12px" onclick="confirmAnsvarlig()">Bekreft Endringer</button>
+      </div>
+    </div>
+    `
+  }
+
+  let limit = Math.floor(document.body.clientWidth / 40) - 2;
+
+  const remainder = task.assigned.length - limit;
+  
+  const assigned = [
+    ...remainder <= 1 ? task.assigned : [
+      ...task.assigned.slice(0, limit),
+      remainder <= 99 ? `+${remainder}` : "99+"
+    ],
+    "EDIT"
+  ]
+
+  let feed = ""
+
+  for (const item of [...task.feed].reverse()) {
+    const itemUser = item.user !== null ? model.users.find(u => u.id == item.user) : null;
+
+    feed += /*HTML*/`
+    <div class="messageBox" style="margin-top: 16px">
+      <div class="messageAuthor">
+        ${AvatarComponent({
+          user: itemUser
+        })}
+        <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>
+      </div>
+      <h2 style="font-weight: 600;">${htmlEscape(item.title)}</h2>
+      <p>${htmlEscape(item.content)}</p>
+      <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(item.date).toString()}</p>
+    </div>
+    `
+  }
+
+  return /*HTML*/`
+  ${breadcrumbs}
+  <div class="message">
+    <h2 style="margin: 0; font-weight: 600;">${model.lanes[task.lane].name}</h2>
+    <h3 style="margin-top: 0;">${task.hole !== null ? `Hull #${task.hole}` : 'Generell Melding'}</h3>
+    <p style="font-size: 18px; white-space: break-spaces;"><span style="font-weight: 600">Opprettet:</span> ${new Date(task.date).toString()}</p>
+    <span class="tag mainTag">${htmlEscape(task.status)}</span><button class="editButton"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>
+    <div class="ansvarligInfo">
+      <span style="font-size: 20px; font-weight: 700; margin-right: 12px;">Hovedansvar:</span>
+        ${AvatarComponent({
+          user: owner
+        })}
+        <span style="font-size: 20px; margin-left: 6px; font-weight: 500">${owner ? owner.username : 'Ukjent'}</span>
+    </div>
+    <div class="assingees assingeesMain" onclick="event.preventDefault()" oncontextmenu="event.preventDefault()">
+    ${assigned.map(assignee => {
+      if (assignee === "EDIT") {
+        return /*HTML*/`<div class="avatarText" onclick="editAnsvarlig()" style="background: #13c0e7;" name="Endre Ansvarlig">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+        </div>`
+      }
+
+        if (typeof assignee === "string") {
+          return /*HTML*/`<div class="avatarText" name="${remainder} andre">
+            ${assignee}
+          </div>`
+        }
+
+        const user = model.users.find(u => u.id == assignee);
+
+        return AvatarComponent({
+          user,
+          extra: `name=${toAttribute(user ? user.username : 'Ukjent')}`
+        })
+    }).join("")}
+    </div>
+    <h1 style="font-weight: 600;">${htmlEscape(task.title)}</h1>
+    <p>${htmlEscape(task.desc)}</p>
+    <h2 style="font-weight: 600; margin-top: 50px;">Oppdateringer</h2>
+    ${feed}
+  </div>
+  `;
+}
+
+function adminTasks() {
+  let lanes = partitionByLane(filterTasks());
+
+  return /*HTML*/`
+  ${adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Oppgaver",
+      href: "tasks"
+    }
+  ])}
+  <a href="#admin/tasks/@new" class="formButton" style="margin-left: 16px; margin-top: 12px; display: inline-flex; align-items: center;"><svg style="margin-right: 6px" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>Lag ny oppgave</a>
+  <h2 style="text-align: center">Oppgaver</h2>
+  ${lanes.map((lane) => /*HTML*/`
+    <h2 style="font-weight: 600">${htmlEscape(lane.title)}</h2>
+    ${lane.messages.map(m => taskButton(m)).join("")}
+  `).join("")}
+  `
+}
+
 function forumButton(msg) {
   const user = msg.userid !== null ? model.users.find(u => u.id == msg.userid) : null;
-  const ansvarlig = msg.ansvarlig !== null ? model.users.find(u => u.id === msg.ansvarlig) : null
 
   return /*HTML*/`<a class="forumButton" href="#admin/messages/${msg.messageid}">
   <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
-    <span class="tag mainTag">${msg.status}</span>
-    ${msg.tags ? msg.tags.map(t => `<span class="tag">${t}</span>`).join("") : ''}
+    <span class="tag mainTag">${htmlEscape(msg.status)}</span>
+    ${msg.tags ? msg.tags.map(t => `<span class="tag">${htmlEscape(t)}</span>`).join("") : ''}
   </div>
   <div style="display: flex; width: 100%; align-items: center">
     <div style="flex-grow: 1; text-overflow: ellipsis; overflow: hidden; margin-right: 5px">${htmlEscape(msg.message)}</div>
-    ${AvatarComponent({
-    user: ansvarlig
-  })}
-    <span style="margin-left: 5px">${ansvarlig ? ansvarlig.username : 'Ingen Ansvarlig'}</span>
   </div>
   <div style="display: flex; align-items: center; gap: 6px;">
   ${AvatarComponent({
@@ -387,13 +665,6 @@ function adminMessage(params) {
     <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; padding: 16px 0;">
       ${message.tags ? message.tags.map(t => `<span class="tag flex-hoz-center" style="padding: 6px 4px 6px 8px">${t}<svg class="removeBtn" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>`).join("") : ''}
       <span class="tag flex-hoz-center addTag"><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>Legg til</span>
-    </div>
-    <div class="ansvarligInfo">
-      <span style="font-size: 20px; font-weight: 700; margin-right: 12px;">Ansvarlig:</span>
-        ${AvatarComponent({
-      user: ansvarlig
-    })}
-        <span style="font-size: 20px; margin-left: 6px; font-weight: 500">${ansvarlig ? ansvarlig.username : 'Ingen'}</span>
     </div>
     <div class="messageBox">
       <div class="messageAuthor">

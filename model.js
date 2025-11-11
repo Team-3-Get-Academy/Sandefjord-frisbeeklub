@@ -23,7 +23,10 @@ function saveModel() {
   const json = {
     users: model.users,
     userCounter: model.appState.userCounter,
+    taskCounter: model.appState.taskCounter,
     messages: model.messages,
+    lanes: model.lanes,
+    tasks: model.tasks,
     messageCounter: model.appState.messageCounter,
     auth: model.appState.auth ? model.appState.auth.id : null
   }
@@ -39,7 +42,10 @@ function loadModel() {
 
   model.users = json.users;
   model.appState.userCounter = json.userCounter;
+  model.appState.taskCounter = json.taskCounter;
   model.messages = json.messages;
+  model.lanes = json.lanes;
+  model.tasks = json.tasks;
 
   model.appState.messageCounter = json.messageCounter
   model.appState.auth = model.users.find(u => u.id == json.auth)
@@ -52,7 +58,8 @@ const model = {
     auth: null, // hvis logget inn, bruker eller null hvis logget ut
     navOpen: false,
     messageCounter: 4, // used to track latest message id, increment to get new
-    userCounter: 3
+    userCounter: 3,
+    taskCounter: 1
   },
 
   viewState: {
@@ -91,6 +98,10 @@ const model = {
       isEditingStatus: false,
       statusInput: "",
 
+      isEditingTags: false,
+      tags: [],
+      tagInput: "",
+
       updateComment: {
         commentid: null, // null = no comment selected, else index in timeline, -1 = message itself
         comment: "", // replaced by the selected comment's content
@@ -98,6 +109,17 @@ const model = {
       },
 
       showDeletion: false // (boolean) if true, show confirmation pop up wether admin really wants to delete the selected message. Only admin and bane admin can do this.
+    },
+
+    viewTask: {
+      isEditingAnsvarlig: false
+    },
+
+    createTask: {
+      lane: null,
+      hole: null,
+      title: "",
+      description: ""
     },
             // boss man
             // user = null #admin/users
@@ -206,6 +228,19 @@ const model = {
       priority: false,
       dob: "01/01/1800",
       gender: GENDERS.MALE
+    },
+    {
+      id: "redacted",
+      username: "???",
+      power: 2,
+      roles: [],
+      rating: 0,
+      email: "redacted@anonymous.org",
+      password: "redacted",
+      picture: "",
+      priority: false,
+      dob: "00/00/0000",
+      gender: "redacted"
     }
   ],
 
@@ -265,6 +300,49 @@ const model = {
       ansvarlig: [] // Array of User IDs
     }
   },
+
+  tasks: [
+    {
+      id: 1,
+      lane: "kodal_short", // String of Lane ID
+      title: "Ta vekk ulvene med en gang", // String of Title
+      desc: "500 ULVER!", // String of Description
+      hole: 9, // Hole if task is related to one
+      status: "Utarbeidet", // String of Status
+      priority: "Høy", // String for priority (Lav, Vanlig or Høy) or null if not set
+      deadline: "2025-11-15", // deadline in string (YYYY-MM-DD) or null if none
+      admin: 0,
+      assigned: [1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3], // user id or null
+      feed: [
+        {
+          title: "Trenger myndighetene",
+          content: "Vi trenger brannvesenet her nå!",
+          user: 0,
+          date: 1762768906874
+        },
+        {
+          title: "Ulvene er vekke.",
+          content: "På Mandag, kom Brannvesenet og tok ulvene vekk fra banen. Oppgaven er nå lukket.",
+          newStatus: "Utarbeidet",
+          user: 0,
+          date: 1762768906874
+        }
+      ], // only assigned, bane admin and admin can post to feed
+      chat: [
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        }
+      ], // anyone with access to lane can post to chat.
+      date: 1762768906874
+    }
+  ],
 
   messages: [
     {

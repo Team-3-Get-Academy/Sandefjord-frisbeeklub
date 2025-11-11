@@ -9,6 +9,10 @@
   box-sizing: border-box;
 }
 
+a {
+  text-decoration: none;
+}
+
 #app {
   overflow: hidden;
   display: flex;
@@ -121,7 +125,6 @@ button {
   text-align: left;
   font-weight: 600;
   font-size: 16px;
-  text-decoration: none;
 
   display: flex;
   align-items: center;
@@ -213,7 +216,7 @@ button {
   margin-top: 12px;
 }
 
-.buttonList > button, .formButton {
+.buttonList > button, .formButton, .deleteButton {
   font-size: 15px;
   font-weight: 600;
   background-color: rgb(18, 120, 238);
@@ -221,6 +224,11 @@ button {
   border: solid 2px rgb(0, 162, 255);
   border-radius: 10px;
   padding: 8px 12px;
+}
+
+.deleteButton {
+  background-color: rgb(255, 70, 64);
+  border-color: rgb(185, 54, 54);
 }
 
 textarea#message {
@@ -241,7 +249,6 @@ textarea#message {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-decoration: none;
   color: black;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -253,6 +260,14 @@ textarea#message {
   width: 30px;
   padding: 4px;
   font-size: 12px;
+  flex-shrink: 0;
+}
+
+.assingeesMain .avatarText {
+  height: 40px;
+  width: 40px;
+  font-size: 14px;
+  padding: 8px;
   flex-shrink: 0;
 }
 
@@ -297,7 +312,6 @@ textarea#message {
 }
 
 .breadcrumbs > * {
-  text-decoration: none;
   font-weight: 600;
 }
 
@@ -473,7 +487,7 @@ textarea#message {
   color: rgb(172, 37, 37);
 }
 
-.editButton, .confirmButton {
+.editButton, .confirmButton, .cancelButton {
   vertical-align: middle;
   background: none;
   border: none;
@@ -496,6 +510,15 @@ textarea#message {
   color: #6bda99;
 }
 
+.cancelButton {
+  color: rgb(238, 70, 70);
+}
+
+.cancelButton:hover {
+  color: white;
+  background: rgb(238, 70, 70);
+}
+
 .confirmButton:hover {
   background-color: #6bda99;
   color: white;
@@ -515,4 +538,60 @@ textarea#message {
 .addTag:hover {
   background: #81fab3;
   color: #000000;
+}
+
+.assingees {
+  display: flex;
+  padding-left: 10px;
+  padding-right: 6px;
+}
+
+.assingees > * {
+  margin-left: -4px;
+  outline: 2px solid rgb(223, 223, 223);
+  position: relative;
+  cursor: default;
+  user-select: none;
+}
+
+.assingees > *:hover::after, .assingees > *:active::after {
+  font-size: 12px;
+  display: block;
+  content: attr(name);
+  position: absolute;
+  top: -6px;
+  right: 0px;
+  transform: translateY(-100%);
+  color: white;
+  background-color: #333333;
+  padding: 6px 8px;
+  border-radius: 5px;
+}
+
+.assignedList {
+  flex-grow: 1;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.assignedList > div {
+  background: rgb(223, 223, 223);
+  color: black;
+  padding: 20px;
+  border: solid 2px rgb(143, 143, 143);
+  border-radius: 12px;
+}
+
+.assignedList > button {
+  background: rgb(223, 223, 223);
+  color: black;
+  padding: 20px;
+  border: solid 2px rgb(143, 143, 143);
+  border-radius: 12px;
+  text-align: start;
+  font-weight: 600;
+  font-size: 18px;
 }

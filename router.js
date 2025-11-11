@@ -19,6 +19,21 @@ const routes = [
     view: adminPanel
   },
   {
+    path: /^admin\/tasks$/,
+    view: adminTasks
+  },
+  {
+    path: /^admin\/tasks\/@new$/,
+    view: newTask,
+    setup: setupNewTask
+  },
+  {
+    path: /^admin\/tasks\/([^\/]+)$/,
+    view: adminTask,
+    setup: setupViewTask,
+    paramKeys: ["task"]
+  },
+  {
     path: /^admin\/lanes$/,
     view: admLanes
   },

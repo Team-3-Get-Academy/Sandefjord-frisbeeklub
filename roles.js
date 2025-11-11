@@ -39,3 +39,35 @@ function getMessageRoles(user, message) {
 
   return roles
 }
+
+function canAdminTask(user, task) {
+  if (!user) return false;
+
+  if (user.power === 1) return true;
+
+  const lane = model.lanes[task.lane];
+
+  if (lane && lane.admin === user.id) return true;
+
+  if (task.admin === user.id) return true;
+
+  return false;
+}
+
+function listUserLanes(user) {
+  if (!user) return [];
+
+  const allLanes = Object.keys(model.lanes);
+
+  if (user.power === 1) return allLanes;
+
+  const userLanes = [];
+
+  for (const lane of allLanes) {
+    if (userCanAccessLane(user, lane)) {
+      userLanes.push(lane);
+    }
+  }
+
+  return userLanes;
+}
