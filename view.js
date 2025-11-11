@@ -614,7 +614,7 @@ function adminMessage(params) {
   const message = model.messages.find(m => m.messageid == params.message);
   if (!message) return breadcrumbs + "<div>Ukjent Melding</div>";
 
-  const user = message.userid !== null ? model.users[message.userid] : null;
+  const user = message.userid !== null ? model.users.find(u => u.id === message.userid) : null;
   const ansvarlig = message.ansvarlig !== null ? model.users.find(u => u.id === message.ansvarlig) : null
 
   let extras = ""
