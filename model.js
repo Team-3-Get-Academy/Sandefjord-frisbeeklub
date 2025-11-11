@@ -321,9 +321,14 @@ const model = {
       assigned: [1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3], // user id or null
       feed: [
         {
-          title: "Trenger myndighetene",
-          content: "Vi trenger brannvesenet her nå!",
+          title: "ALERT! Trenger myndighetene",
+          content: "Vi trenger politiet her nå! Noen har hacket siden vår!",
           user: 0,
+          date: 1762768906874
+        },
+        {
+          status: "TRENGER FØRSTEHJELP!",
+          user: 3,
           date: 1762768906874
         },
         {
@@ -341,63 +346,33 @@ const model = {
       ], // only assigned, bane admin and admin can post to feed
       chat: [
         {
-          user: 1,
-          message: "Jeg har kontaktet brannvesenet",
-          date: 1762768906874
+          user: "redacted",
+          message: "Hallo :)",
+          date: 0
         },
         {
-          user: 0,
-          message: "Så bra, jeg skal oppdatere status.",
-          date: 1762768906874
+          user: 2,
+          message: "Jeg klarte å hacke nettsiden deres også!",
+          date: 0
         },
         {
-          user: 1,
-          message: "Jeg har kontaktet brannvesenet",
-          date: 1762768906874
-        },
-        {
-          user: 0,
-          message: "Så bra, jeg skal oppdatere status.",
+          user: 3,
+          message: "Hvem er disse folkene?",
           date: 1762768906874
         },
         {
           user: 1,
-          message: "Jeg har kontaktet brannvesenet",
+          message: "Vet ikke, hvordan kom de seg inn her?",
           date: 1762768906874
         },
         {
           user: 0,
-          message: "Så bra, jeg skal oppdatere status.",
-          date: 1762768906874
-        },
-        {
-          user: 1,
-          message: "Jeg har kontaktet brannvesenet",
+          message: "De må bli bannet med en gang!!",
           date: 1762768906874
         },
         {
           user: 0,
-          message: "Så bra, jeg skal oppdatere status.",
-          date: 1762768906874
-        },
-        {
-          user: 1,
-          message: "Jeg har kontaktet brannvesenet",
-          date: 1762768906874
-        },
-        {
-          user: 0,
-          message: "Så bra, jeg skal oppdatere status.",
-          date: 1762768906874
-        },
-        {
-          user: 1,
-          message: "Jeg har kontaktet brannvesenet",
-          date: 1762768906874
-        },
-        {
-          user: 0,
-          message: "Så bra, jeg skal oppdatere status.",
+          message: "Noen må kontakte politiet.",
           date: 1762768906874
         },
         {
