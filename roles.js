@@ -54,6 +54,15 @@ function canAdminTask(user, task) {
   return false;
 }
 
+function canAccessTask(user, task) {
+  if (!user) return false;
+
+  if (canAdminTask(user, task)) return true;
+  if (task.assigned.includes(user.id)) return true;
+
+  return false;
+}
+
 function listUserLanes(user) {
   if (!user) return [];
 

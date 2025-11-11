@@ -312,6 +312,55 @@ function taskButton(msg) {
   </a>`// ${msg.attachments.map(x=>`<iframe src=${JSON.stringify(transformDataURL(x.data))}></iframe><p>${htmlEscape(x.name)}</p>`).join("")}
 }
 
+function taskMsgs(params) {
+  const breadcrumbs = adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Oppgaver",
+      href: "tasks"
+    },
+    {
+      text: `Oppgave ${params.task}`,
+      href: encodeURIComponent(params.task)
+    },
+    {
+      text: "Meldinger",
+      href: "messages"
+    }
+  ])
+
+  const task = model.tasks.find(t => t.id == params.task);
+
+  if (!task) return breadcrumbs + "<div>Ukjent Oppgave</div>"
+
+  return /*HTML*/`<div style="display: flex; flex-direction: column; height: 100%">
+  ${breadcrumbs}
+  <div id="taskMsgsContainer" style="overflow-y: auto; overflow-x: none;">
+    ${task.chat.length > 0 ? task.chat.map(msg => {
+      const user = msg.user !== null ? model.users.find(u => u.id == msg.user) : null;
+      const avatar = AvatarComponent({
+        user
+      });
+
+      return /*HTML*/`<div class="chatMessage">
+        ${avatar}
+        <div>
+          <span style="font-size: 18px; font-weight: 600">${htmlEscape(user ? user.username : 'Ukjent')}</span>
+          <p style="font-size: 18px; margin: 0; word-wrap: break-word;">${htmlEscape(msg.message)}</p>
+          <p style="font-size: 12px; white-space: break-spaces; margin: 0;">${new Date(msg.date).toString()}</p>
+        </div>
+      </div>`
+    }).join("") : "<p>Ingen meldinger.</p>"}
+    <textarea oninput="updateTaskMessageInput()" id="message" class="messageBox" placeholder="Skriv melding" style="resize: none; width: 100%; font-size: 18px; font-weight: 500; margin-top: 20px;">${htmlEscape(model.viewState.createTask.message)}</textarea>
+    <button class="formButton" onclick="sendTaskMessage(${task.id})">Send Melding</button>
+  </div>
+  </div>
+  `;
+}
+
 function adminTask(params) {
   const breadcrumbs = adminBreadcrumbs([
     {
@@ -394,6 +443,19 @@ function adminTask(params) {
       </div>
     </div>
     `
+  } else if (model.viewState.viewTask.isAddingFeed) {
+    return /*HTML*/`${breadcrumbs}<div style="padding: 16px;">
+      <h3 style="margin-bottom: 0">Legg til oppdatering for</h3>
+      <h2 style="font-weight: 600; margin-top: 0">${htmlEscape(task.title)}</h2>
+      <div style="display: flex; flex-direction: column;">
+        <label for="title">Tittel:</label>
+        <input id="title" value=${toAttribute(model.viewState.viewTask.feedTitle)} oninput="updateTaskFeedTitle()">
+        <label for="description">Beskrivelse:</label>
+        <textarea oninput="updateTaskFeedDesc()" style="resize: none; height: 100px" id="description">${htmlEscape(model.viewState.viewTask.feedDesc)}</textarea>
+      </div>
+      <button class="formButton" onclick="confirmAddFeed(${task.id})">Legg til</button>
+      <button class="deleteButton" onclick="cancelFeed()">Kanseller</button>
+    </div>`
   }
 
   let limit = Math.floor(document.body.clientWidth / 40) - 2;
@@ -413,20 +475,43 @@ function adminTask(params) {
   for (const item of [...task.feed].reverse()) {
     const itemUser = item.user !== null ? model.users.find(u => u.id == item.user) : null;
 
-    feed += /*HTML*/`
-    <div class="messageBox" style="margin-top: 16px">
-      <div class="messageAuthor">
-        ${AvatarComponent({
-          user: itemUser
-        })}
-        <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>
+    if (item.status) {
+      feed += /*HTML*/`
+      <div class="messageUpdateInfo" style="margin-top: 16px">
+      ${AvatarComponent({
+        user: itemUser
+      })}
+      <div>
+        <div class="messageUpdateContainer">
+          <span style="margin-right: 4px;">
+            <span style="font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>
+          </span>
+          <span style="margin-right: 8px; font-weight: 500">endret status til</span>
+          <span class="tag mainTag">${htmlEscape(item.status)}</span>
+        </div>
+        <p style="font-size: 12px; white-space: break-spaces; margin: 0;">${new Date(item.date).toString()}</p>
       </div>
-      <h2 style="font-weight: 600;">${htmlEscape(item.title)}</h2>
-      <p>${htmlEscape(item.content)}</p>
-      <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(item.date).toString()}</p>
-    </div>
-    `
+      </div>
+      `
+    } else {
+      feed += /*HTML*/`
+      <div class="messageBox" style="margin-top: 16px">
+        <div class="messageAuthor">
+          ${AvatarComponent({
+            user: itemUser
+          })}
+          <span style="font-size: 20px; margin-left: 12px; font-weight: 600">${itemUser ? itemUser.username : 'Ukjent'}</span>
+        </div>
+        <h2 style="font-weight: 600;">${htmlEscape(item.title)}</h2>
+        <p>${htmlEscape(item.content)}</p>
+        <p style="font-size: 16px; white-space: break-spaces; margin: 0; margin-top: 12px">${new Date(item.date).toString()}</p>
+      </div>
+      `
+    }
   }
+
+  const lastMessage = task.chat[task.chat.length - 1];
+  const lastMessageUser = lastMessage && lastMessage.user !== null ? model.users.find(u => u.id === lastMessage.user) : null
 
   return /*HTML*/`
   ${breadcrumbs}
@@ -434,7 +519,10 @@ function adminTask(params) {
     <h2 style="margin: 0; font-weight: 600;">${model.lanes[task.lane].name}</h2>
     <h3 style="margin-top: 0;">${task.hole !== null ? `Hull #${task.hole}` : 'Generell Melding'}</h3>
     <p style="font-size: 18px; white-space: break-spaces;"><span style="font-weight: 600">Opprettet:</span> ${new Date(task.date).toString()}</p>
-    <span class="tag mainTag">${htmlEscape(task.status)}</span><button class="editButton"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>
+    ${model.viewState.viewTask.isEditingStatus ?
+      `<input style="width: 100px" value=${toAttribute(model.viewState.viewTask.statusInput)} id="statusInput" oninput="updateEditTaskStatusInput()" class="tag mainTag"><button class="confirmButton" onclick="confirmEditTaskStatus(${task.id})"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>` :
+      `<span class="tag mainTag">${htmlEscape(task.status)}</span><button class="editButton" onclick="editTaskStatus(${task.id})"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>`
+    }
     <div class="ansvarligInfo">
       <span style="font-size: 20px; font-weight: 700; margin-right: 12px;">Hovedansvar:</span>
         ${AvatarComponent({
@@ -464,10 +552,27 @@ function adminTask(params) {
         })
     }).join("")}
     </div>
-    <h1 style="font-weight: 600;">${htmlEscape(task.title)}</h1>
-    <p>${htmlEscape(task.desc)}</p>
+    <h1 style="font-weight: 600; font-size: 25px; margin-top: 50px;">${htmlEscape(task.title)}</h1>
+    <p style="word-wrap: break-word; font-size: 20px;">${htmlEscape(task.desc)}</p>
+    <h2 style="font-weight: 600; margin-top: 50px;">Siste Melding</h2>
+    ${
+      lastMessage ? 
+      /*HTML*/`<div class="chatMessage">
+        ${AvatarComponent({
+          user: lastMessageUser
+        })}
+        <div>
+          <span style="font-size: 18px; font-weight: 600">${htmlEscape(lastMessageUser ? lastMessageUser.username : 'Ukjent')}</span>
+          <p style="font-size: 18px; margin: 0; word-wrap: break-word;">${htmlEscape(lastMessage.message)}</p>
+          <p style="font-size: 12px; white-space: break-spaces; margin: 0;">${new Date(lastMessage.date).toString()}</p>
+        </div>
+      </div>`
+      : `<p>Ingen meldinger.</p>`
+    }
+    <a href="#admin/tasks/${encodeURIComponent(params.task)}/messages" class="formButton" style="margin-top: 18px;">Åpne meldinger</a>
     <h2 style="font-weight: 600; margin-top: 50px;">Oppdateringer</h2>
-    ${feed}
+    ${canAccessTask(model.appState.auth, task) ? `<button onclick="addFeed()" class="formButton">Legg til oppdatering</button>` : ''}
+    ${feed || `<p>Ingen oppdateringer.</p>`}
   </div>
   `;
 }
@@ -807,6 +912,10 @@ function renderView() {
   app.innerHTML = /*HTML*/`
     ${navigationBar()}
     ${model.appState.navOpen ? navigationMenu() : ''}
-    <div class="pageContainer">${model.appState.currentPage.view(model.appState.routeParams)}</div>
+    <div id="pageContainer">${model.appState.currentPage.view(model.appState.routeParams)}</div>
   `
+
+  if (model.appState.currentPage.afterRender) {
+    model.appState.currentPage.afterRender(model.appState.routeParams)
+  }
 }

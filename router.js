@@ -34,6 +34,18 @@ const routes = [
     paramKeys: ["task"]
   },
   {
+    path: /^admin\/tasks\/([^\/]+)\/messages$/,
+    view: taskMsgs,
+    setup: setupMessageTask,
+    paramKeys: ["task"],
+    afterRender: () => {
+      const taskMsgsContainer = document.getElementById("taskMsgsContainer");
+      if (!taskMsgsContainer) return;
+
+      taskMsgsContainer.scrollTo(0, taskMsgsContainer.scrollHeight)
+    }
+  },
+  {
     path: /^admin\/lanes$/,
     view: admLanes
   },

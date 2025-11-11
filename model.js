@@ -112,14 +112,20 @@ const model = {
     },
 
     viewTask: {
-      isEditingAnsvarlig: false
+      isEditingAnsvarlig: false,
+      isAddingFeed: false,
+      feedTitle: "",
+      feedDesc: "",
+      isEditingStatus: false,
+      statusInput: ""
     },
 
     createTask: {
       lane: null,
       hole: null,
       title: "",
-      description: ""
+      description: "",
+      message: ""
     },
             // boss man
             // user = null #admin/users
@@ -326,6 +332,11 @@ const model = {
           newStatus: "Utarbeidet",
           user: 0,
           date: 1762768906874
+        },
+        {
+          status: "Utarbeidet",
+          user: 0,
+          date: 1762768906874
         }
       ], // only assigned, bane admin and admin can post to feed
       chat: [
@@ -338,7 +349,67 @@ const model = {
           user: 0,
           message: "Så bra, jeg skal oppdatere status.",
           date: 1762768906874
-        }
+        },
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        },
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        },
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        },
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        },
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        },
+        {
+          user: 1,
+          message: "Jeg har kontaktet brannvesenet",
+          date: 1762768906874
+        },
+        {
+          user: 0,
+          message: "Så bra, jeg skal oppdatere status.",
+          date: 1762768906874
+        },
       ], // anyone with access to lane can post to chat.
       date: 1762768906874
     }

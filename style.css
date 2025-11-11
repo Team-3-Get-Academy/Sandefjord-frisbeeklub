@@ -152,7 +152,7 @@ button {
 
 /* Page - General */
 
-.pageContainer {
+#pageContainer {
   flex-grow: 1;
   width: 100%;
   overflow: auto;
@@ -224,6 +224,7 @@ button {
   border: solid 2px rgb(0, 162, 255);
   border-radius: 10px;
   padding: 8px 12px;
+  display: inline-block;
 }
 
 .deleteButton {
@@ -594,4 +595,37 @@ textarea#message {
   text-align: start;
   font-weight: 600;
   font-size: 18px;
+}
+
+.chatMessage {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.chatMessage.reversed {
+  justify-content: end;
+  text-align: right;
+}
+
+.chatMessage .avatarText {
+  height: 40px;
+  width: 40px;
+  font-size: 14px;
+  padding: 6px;
+  flex-shrink: 0;
+}
+
+.chatMessage > div {
+  overflow: hidden;
+}
+
+#taskMsgsContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+#taskMsgsContainer > .chatMessage {
+  margin-top: 16px;
 }
