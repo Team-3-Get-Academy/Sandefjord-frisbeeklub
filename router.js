@@ -38,6 +38,10 @@ const routes = [
     path: /^admin\/users$/,
     view: admUsers
   },
+    {
+    path: /^admin\/users\/manageuser$/,
+    view: admManage
+  },
   {
     path: /^test\/static$/,
     view: StaticTestPage

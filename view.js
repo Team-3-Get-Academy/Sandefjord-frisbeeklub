@@ -441,7 +441,21 @@ function admUsers() {
       href: "users"
     }
   ])}
-  <h2>ADMIN3</h2>
+  <h2>Administrer Brukere</h2>
+  <div>
+    <p>Velg Bruker:</p>
+    <div class="admContainer">
+    <br>
+      ${userList()}
+    </div>
+  </div>
+  `
+}
+
+function admManage(user) {
+  return /*HTML*/`
+  <h2>Administrer bruker: </h2>
+  
   `
 }
 
@@ -451,7 +465,7 @@ function navigationBar() {
       <img src="./assets/logo.png" style="pointer-events: none; vertical-align: bottom;"></a>
     </a>
     <h1>Sandefjord Frisbeeklub</h1>
-    <h3 style="margin-left: auto; max-width: 50%">${navUserDisplay()}</h3>
+    <h3 style="max-width: 50%">${navUserDisplay()}</h3>
     <button class="hamburger" style="margin-left: 5%;" onclick="openNavigation()">
       <span></span>
       <span></span>
