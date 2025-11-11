@@ -63,12 +63,6 @@ function registerSubmit(e) {
     saveModel()
     navigate("")
 }
-function removeLastUser(){
-    model.users.pop()
-    model.appState.userCounter -=1
-    saveModel()
-    return model.users
-}
 
 function setupRegister() {
     model.viewState.register.username = ""

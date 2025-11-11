@@ -828,10 +828,35 @@ function admUsers() {
   `
 }
 
-function admManage(user) {
+function admManage({user}) {
   return /*HTML*/`
-  <h2>Administrer bruker: </h2>
-  
+  ${adminBreadcrumbs([
+    {
+      text: "Admin Panel",
+      href: "admin"
+    },
+    {
+      text: "Brukere",
+      href: "users"
+    },
+    {
+    text: "Administrer Bruker",
+    href: ""
+    }
+  ])}
+  <h2>Administrer bruker: ${user} ${powerCheck()}</h2>
+  <div class="admContainer">
+    ${priorityCheck()}
+    <p>E-postadresse: ${model.viewState.administrateUsers.user.email}</p>
+    <p>Passord: ${model.viewState.administrateUsers.user.password}<br><button>Endre Passord</button></p>
+    
+    <p>Fødselsdato: ${model.viewState.administrateUsers.user.dob}</p>
+    <p>Kjønn: ${model.viewState.administrateUsers.user.gender}</p>
+    <br>
+    <br>
+    <br>
+    <button onclick="removeUser()" style="font-weight: 600; background: red">SLETT BRUKER</button>
+  </div>
   `
 }
 

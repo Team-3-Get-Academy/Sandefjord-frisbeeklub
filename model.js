@@ -14,9 +14,9 @@
 */
 
 const GENDERS = {  
-  MALE: "m",
-  FEMALE: "f",
-  OTHER: "other"
+  MALE: "Mann",
+  FEMALE: "Kvinne",
+  OTHER: "Annet"
 }
 
 function saveModel() {
@@ -28,7 +28,8 @@ function saveModel() {
     lanes: model.lanes,
     tasks: model.tasks,
     messageCounter: model.appState.messageCounter,
-    auth: model.appState.auth ? model.appState.auth.id : null
+    auth: model.appState.auth ? model.appState.auth.id : null,
+    manageUser: model.viewState.administrateUsers
   }
 
   localStorage.setItem("data", JSON.stringify(json))
@@ -49,6 +50,7 @@ function loadModel() {
 
   model.appState.messageCounter = json.messageCounter
   model.appState.auth = model.users.find(u => u.id == json.auth)
+  model.viewState.administrateUsers = json.manageUser
 }
 
 const model = {
@@ -234,6 +236,19 @@ const model = {
       priority: false,
       dob: "01/01/1800",
       gender: GENDERS.MALE
+    },
+    {
+      id: 5,
+      username: "BUG",
+      power: 12,
+      roles: [],
+      rating: 0,
+      email: "BUG@SYSTEM.NET",
+      password: "BUG",
+      picture: "",
+      priority: false,
+      dob: "~~/~~/~~",
+      gender: "BUG"
     },
     {
       id: "redacted",

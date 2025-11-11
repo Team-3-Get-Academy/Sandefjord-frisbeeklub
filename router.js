@@ -66,8 +66,11 @@ const routes = [
     view: admUsers
   },
     {
-    path: /^admin\/users\/manageuser$/,
-    view: admManage
+    path: /^admin\/users\/([^\/]+)$/,
+    view: admManage,
+    paramKeys: [
+      "user"
+    ]
   },
   {
     path: /^test\/static$/,
